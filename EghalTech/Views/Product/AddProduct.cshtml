@@ -1,0 +1,130 @@
+﻿@model Product
+@{
+    ViewData["Title"] = "Add New Product - EghalTech Admin";
+    Layout = null;
+    SelectList categoryList = new SelectList(ViewBag.Categories, "Id", "Name");
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/admin-add-product.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="admin-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="header-left">
+                    <a asp-action="Index" asp-controller="Product" class="back-link">
+                        <svg class="back-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="m15 18-6-6 6-6" />
+                        </svg>
+                        Back to Dashboard
+                    </a>
+                </div>
+                <div class="header-logo">
+                    <span class="logo-red">Eghal</span><span class="logo-black">Tech</span> Admin
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h1>Add New Product</h1>
+                <p>Add a new tech gadget to your inventory</p>
+            </div>
+
+            <form id="addProductForm" class="product-form" asp-action="AddProduct" asp-controller="Product" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+
+                <!-- Basic Information -->
+                <div class="form-card">
+                    <div class="card-header">
+                        <h2>Basic Information</h2>
+                        <p>Enter the basic details of your product</p>
+                    </div>
+                    <div class="card-content">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="Name">Product Name *</label>
+                                <input asp-for="Name" placeholder="e.g., iPhone 15 Pro Max">
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="Brand">Brand *</label>
+                                <input asp-for="Brand" placeholder="e.g., Apple">
+                                <span asp-validation-for="Brand" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Description">Description *</label>
+                            <textarea asp-for="Description" placeholder="Detailed product description..." rows="4"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="CategoryId">Category *</label>
+                                <select asp-for="CategoryId" asp-items="@categoryList" >
+                                    <option value="">Select category</option>
+                                </select>
+                                <span asp-validation-for="CategoryId" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="Price">Price ($) *</label>
+                                <input asp-for="Price" placeholder="999.99" step="0.01" >
+                                <span asp-validation-for="Price" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="StockQuantity">Stock Quantity *</label>
+                                <input asp-for="StockQuantity" placeholder="100" >
+                                <span asp-validation-for="StockQuantity" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Images -->
+                <div class="form-card">
+                    <div class="card-header">
+                        <h2>Product Images</h2>
+                        <p>Upload high-quality images of your product</p>
+                        <span asp-validation-for="ImageUrl"></span>
+                    </div>
+                    <div class="card-content">
+                        <div class="image-upload-area" id="imageUploadArea">
+                            <input asp-for="ImageUrl" type="file" id="imageUpload" name="Image" accept="image/*" style="display: none;" required>
+                            <div class="upload-placeholder" onclick="document.getElementById('imageUpload').click()">
+                                <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                    <polyline points="7,10 12,15 17,10" />
+                                    <line x1="12" y1="15" x2="12" y2="3" />
+                                </svg>
+                                <p>Click to upload image or drag and drop</p>
+                                <small>PNG, JPG, WEBP up to 10MB</small>
+                            </div>
+                        </div>
+                        <div id="imagePreview" class="single-image-preview"></div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Add Product</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script src="~/js/admin-add-product.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+</body>
+</html>

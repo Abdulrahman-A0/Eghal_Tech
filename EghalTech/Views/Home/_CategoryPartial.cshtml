@@ -1,0 +1,21 @@
+﻿@model List<Category>
+<div class="container">
+    <div class="section-header">
+        <h2 class="section-title">Shop by Category</h2>
+        <p class="section-description">Explore our wide range of technology categories</p>
+    </div>
+    <div class="categories-grid">
+        @foreach(var category in Model)
+        {
+            <div class="category-card">
+                <div class="category-icon">
+                    <i class="bi bi-phone"></i>
+                </div>
+                <h3 class="category-title">@category.Name</h3>
+                <a asp-action="Index" asp-controller="Store" class="category-link">
+                    Shop Now <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>    
+        }
+    </div>
+</div>

@@ -1,0 +1,225 @@
+﻿@model ProductDetailsViewModel
+@{
+    ViewData["Title"] = $"{Model.Product.Name} - EghalTech Store";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/store-product.css">
+</head>
+<body>
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <div class="product-layout">
+                <!-- Product Images -->
+                <div class="product-images">
+                    <div class="main-image-container">
+                        <img id="mainImage" src="~/img/product/@Model.Product.ImageUrl" alt="@Model.Product.Name" class="main-image">
+                    </div>
+                </div>
+
+                <!-- Product Info -->
+                <div class="product-info">
+                    <div class="product-badges">
+                        <span class="brand-badge">@Model.Product.Brand</span>
+                        <span class="category-badge">@Model.Product.Category.Name</span>
+                    </div>
+
+                    <h1 class="product-title">@Model.Product.Name</h1>
+
+                    <div class="rating-section">
+                        <div class="stars" data-rating="@Model.AverageRating">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star"></i>
+                        </div>
+                        <span class="rating-value">@Model.AverageRating.ToString("F1")</span>
+                        <span class="review-count">(@Model.ReviewCount reviews)</span>
+                    </div>
+
+                    <div class="price-section">
+                        <span class="current-price">$@Model.Product.Price.ToString("F2")</span>
+                    </div>
+
+                    <div class="product-status">
+                        <div class="status-item">
+                            <i class="bi bi-check-circle text-success"></i>
+                            <span>In Stock (@Model.Product.StockQuantity available)</span>
+                        </div>
+                        <div class="status-item">
+                            <i class="bi bi-truck text-primary"></i>
+                            <span>Free shipping on orders over $50</span>
+                        </div>
+                        <div class="status-item">
+                            <i class="bi bi-shield-check text-info"></i>
+                            <span>1-year warranty included</span>
+                        </div>
+                    </div>
+                        <div class="quantity-cart-section">
+                        <button class="add-to-cart-btn" onclick="AddToCart(@Model.Product.Id,this)">
+                            <i class="bi bi-cart-plus"></i>
+                            Add to Cart
+                        </button>
+                        
+                        <button class="action-btn wishlist-btn full-btn" onclick="addToWishList(@Model.Product.Id,this)">
+                            <i class="bi bi-heart"></i>
+                        </button>
+                        </div>
+                </div>
+            </div>
+
+            <!-- Product Details Tabs -->
+            <div class="product-tabs">
+                <div class="tab-navigation">
+                    <button class="tab-btn active" data-tab="description">Description</button>
+                    <button class="tab-btn" data-tab="reviews">Reviews (@Model.ReviewCount)</button>
+                </div>
+
+                <div class="tab-content">
+                    <!-- Description Tab -->
+                    <div id="description" class="tab-panel active">
+                            <div class="description-text">
+                                <h3>Product Description</h3>
+                                <p>@Model.Product.Description</p>
+
+                                <h4>Key Features:</h4>
+                                <ul class="features-list">
+                                    <li>
+                                        <i class="bi bi-check"></i> Lorem ipsum dolor sit amet consectetur adipisicing elit. Veritatis perspiciatis numquam, voluptatum beatae magnam sed possimus sit obcaecati quis ea natus error ad cupiditate voluptatibus quidem rem nemo temporibus corporis.</li>
+                                    <li>
+                                        <i class="bi bi-check"></i> Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis eius porro, mollitia, in earum, vitae dolores consectetur dolorum blanditiis nulla exercitationem? At voluptatum quod facilis quis cupiditate sequi placeat autem.
+                                    </li>
+                                    <li>
+                                        <i class="bi bi-check"></i> Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque distinctio atque odit deleniti minima? Quod sapiente blanditiis sunt dolorum? Iste sit minus cumque a eum tempora ut aliquid officia nam?	<!-- Start Header Area -->
+                                    </li>
+                                    <li>
+                                        <i class="bi bi-check"></i> Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque distinctio atque odit deleniti minima? Quod sapiente blanditiis sunt dolorum? Iste sit minus cumque a eum tempora ut aliquid officia nam?	<!-- Start Header Area -->
+                                    </li>
+                                    <li>
+                                        <i class="bi bi-check"></i> Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque distinctio atque odit deleniti minima? Quod sapiente blanditiis sunt dolorum? Iste sit minus cumque a eum tempora ut aliquid officia nam?	<!-- Start Header Area -->
+                                    </li>
+                                </ul>
+                            </div>
+                    </div>
+
+                    <!-- Reviews Tab -->
+                    <div id="reviews" class="tab-panel">
+                        <!-- Review Summary -->
+                        <div class="review-summary">
+                            <div class="rating-overview">
+                                <div class="overall-rating">
+                                    <span class="rating-number">@Model.AverageRating.ToString("F1")</span>
+                                    <div class="stars" data-rating="@Model.AverageRating">
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star"></i>
+                                    </div>
+                                    <span class="total-reviews">Based on @Model.ReviewCount reviews</span>
+                                </div>
+                                <div class="rating-breakdown">
+                                    @for (int i = 5; i >= 1; i--)
+                                    {
+                                        var count = Model.Reviews.Count(r => r.Rating == i);
+                                        var percentage = Model.ReviewCount > 0 ? (count * 100.0 / Model.ReviewCount) : 0;
+                                        <div class="rating-bar">
+                                            <span class="rating-label">@i★</span>
+                                            <div class="bar-container">
+                                                <div class="bar-fill" style="width: @percentage%"></div>
+                                            </div>
+                                            <span class="rating-count">@count</span>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                            <button class="write-review-btn" onclick="showReviewForm()">Write a Review</button>
+                        </div>
+
+                        <!-- Review Form -->
+                        <div id="reviewForm" class="review-form" style="display: none;">
+                            <h3>Write Your Review</h3>
+                            <form action="@Url.Action("SubmitReview", "Store")" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="ProductId" value="@Model.Product.Id">
+
+                                <div class="form-group">
+                                    <label>Rating</label>
+                                    <div class="star-rating" id="starRating">
+                                        <button type="button" class="star-btn" data-rating="1"><i class="bi bi-star"></i></button>
+                                        <button type="button" class="star-btn" data-rating="2"><i class="bi bi-star"></i></button>
+                                        <button type="button" class="star-btn" data-rating="3"><i class="bi bi-star"></i></button>
+                                        <button type="button" class="star-btn" data-rating="4"><i class="bi bi-star"></i></button>
+                                        <button type="button" class="star-btn" data-rating="5"><i class="bi bi-star"></i></button>
+                                    </div>
+                                    <input type="hidden" name="Rating" id="ratingValue" value="5">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="reviewTitle">Review Title</label>
+                                    <input type="text" name="Title" id="reviewTitle" placeholder="Give your review a title" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="reviewComment">Your Review</label>
+                                    <textarea name="Comment" id="reviewComment" rows="4" placeholder="Share your experience with this product" required></textarea>
+                                </div>
+
+                                <div class="form-actions">
+                                    <button type="submit" class="submit-review-btn">Submit Review</button>
+                                    <button type="button" class="cancel-btn" onclick="hideReviewForm()">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Reviews List -->
+                        <div class="reviews-list">
+                            @foreach (var review in Model.Reviews.OrderByDescending(r => r.CreatedAt))
+                            {
+                                <div class="review-item">
+                                    <div class="review-header">
+                                        <div class="reviewer-info">
+                                            <span class="reviewer-name">@review.User.Name</span>
+                                        </div>
+                                        <div class="review-meta">
+                                            <div class="stars" data-rating="@review.Rating">
+                                                <i class="bi bi-star-fill"></i>
+                                                <i class="bi bi-star-fill"></i>
+                                                <i class="bi bi-star-fill"></i>
+                                                <i class="bi bi-star-fill"></i>
+                                                <i class="bi bi-star"></i>
+                                            </div>
+                                            <span class="review-date">@review.CreatedAt.ToString("MMM dd, yyyy")</span>
+                                        </div>
+                                    </div>
+                                    <p class="review-comment">@review.Comment</p>
+                                    <div class="review-actions">
+                                        <button class="helpful-btn">
+                                            <i class="bi bi-hand-thumbs-up"></i>
+                                        </button>
+                                        <button class="report-btn">Report</button>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    
+</body>
+@section Scripts{
+    <script src="~/js/store-product.js"></script>
+    <script src="~/js/home.js"></script>
+}
+
+</html>

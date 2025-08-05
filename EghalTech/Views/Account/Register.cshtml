@@ -1,0 +1,70 @@
+﻿@model RegisterViewModel
+@{
+    ViewData["Title"] = "Register - EghalTech";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/login.css" />
+}
+
+<div class="login-page-container">
+    <div class="login-card">
+        <div class="login-header">
+            <h1 class="login-title">Create Account</h1>
+            <p class="login-subtitle">Join EghalTech today</p>
+        </div>
+
+        <div class="alert-container">
+            @if (!ViewData.ModelState.IsValid && ViewData.ModelState.Any(x => x.Value.Errors.Any()))
+            {
+                <div class="alert-danger" asp-validation-summary="All"></div>
+            }
+        </div>
+
+        <form class="login-form" asp-action="Register" asp-controller="Account" method="post" id="registerForm" novalidate="novalidate">
+            <div class="form-group">
+                <label for="Name" class="sr-only">Full Name</label>
+                <input class="form-control" asp-for="@Model.Name" placeholder="Full Name" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Full Name'">
+                <span asp-validation-for="@Model.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="Email" class="sr-only">Email</label>
+                <input class="form-control" asp-for="@Model.Email" placeholder="Email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email'">
+                <span asp-validation-for="@Model.Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="Phone" class="sr-only">Phone Number</label>
+                <input class="form-control" asp-for="@Model.Phone" placeholder="Phone Number" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Phone Number'">
+                <span asp-validation-for="@Model.Phone" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="Address" class="sr-only">Address</label>
+                <input class="form-control" asp-for="@Model.Address" placeholder="Address" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Address'">
+                <span asp-validation-for="@Model.Address" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="Password" class="sr-only">Password</label>
+                <input class="form-control" asp-for="@Model.Password" placeholder="Password" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Password'">
+                <span asp-validation-for="@Model.Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="ConfirmPassword" class="sr-only">Confirm Password</label>
+                <input class="form-control" asp-for="@Model.ConfirmPassword" placeholder="Confirm Password" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Confirm Password'">
+                <span asp-validation-for="@Model.ConfirmPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <button type="submit" value="submit" class="btn btn-primary login-btn">Register</button>
+            </div>
+        </form>
+
+        <div class="login-footer">
+            <p>Already have an account? <a asp-action="Login" asp-controller="Account">Sign In</a></p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+}

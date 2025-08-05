@@ -1,0 +1,128 @@
+﻿@model ProductCardViewModel
+@{
+    ViewData["Title"] = "EghalTech Store - All Products";
+}
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/store-index.css">
+    <link rel="stylesheet" href="~/css/home.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Store Banner -->
+    <div class="store-banner">
+        <div class="container">
+            <div class="banner-content">
+                <h1 class="banner-title">Discover Our Products</h1>
+                <p class="banner-subtitle">Quality products at unbeatable prices</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content main-padding">
+        <div class="container container-toppadding">
+            <!-- Products Grid -->
+            <div class="products-grid" >
+                @if (Model.Products.Any())
+                {
+                    @foreach (var prod in Model.Products)
+                    {
+                        var isInWishlist = Model.WishListProductIds.Contains(prod.Id);
+
+                        <div class="product-card-wrapper">
+                            <a asp-action="ProductDetails" asp-controller="Store" asp-route-Id="@prod.Id" style="text-decoration:none">
+                                <div class="product-card">
+                                    <div class="product-image">
+                                        <img src="/img/product/@prod.ImageUrl" alt="@prod.Name">
+                                        <div class="product-actions">
+                                            <button class="action-btn wishlist-btn @(isInWishlist ? "active" : "")"
+                                                    onclick="addToWishList(@prod.Id,this)">
+                                                <i class="bi @(isInWishlist ? "bi-heart-fill" : "bi-heart")"></i>
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                    <div class="product-info">
+                                        <div class="product-category">@prod.Category.Name</div>
+                                        <h3 class="product-title">@prod.Name</h3>
+                                        <div class="product-rating">
+                                            <div class="stars">
+                                                <i class="bi bi-star-fill"></i>
+                                                <i class="bi bi-star-fill"></i>
+                                                <i class="bi bi-star-fill"></i>
+                                                <i class="bi bi-star-fill"></i>
+                                                <i class="bi bi-star-fill"></i>
+                                            </div>
+                                            <span class="rating-count">@(prod.Reviews?.Count ?? 0)</span>
+                                        </div>
+                                        <div class="product-price">
+                                            <span class="current-price">$@prod.Price.ToString("F2")</span>
+                                        </div>
+                                        <div class="product-stock">
+                                            @if (prod.StockQuantity > 0)
+                                            {
+                                                <span class="in-stock">
+                                                    <i class="bi bi-check-circle"></i>
+                                                    @prod.StockQuantity in stock
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="out-of-stock">
+                                                    <i class="bi bi-x-circle"></i>
+                                                    Out of stock
+                                                </span>
+                                            }
+                                        </div>
+                                        <button class="add-to-cart-btn" id="@prod.Id-cart-btn" onclick="AddToCart(@prod.Id,this)" @(prod.StockQuantity <= 0 ? "disabled" : "")>
+                                            <i class="bi bi-cart-plus"></i>
+                                            Add to Cart
+                                        </button>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="no-products">
+                        <i class="bi bi-box-seam"></i>
+                        <h3>No products match '@TempData["prodName"]' were found</h3>
+                        <p>Check back later for new products.</p>
+                    </div>
+                }
+            </div>
+
+            <!-- Pagination -->
+            @if (Model.Products.PageCount > 1)
+            {
+                <div class="pagination-container">
+                    @Html.PagedListPager(Model.Products, page =>
+                    Url.Action("Index", new { page, search = Context.Request.Query["search"], sort = Context.Request.Query["sort"] }),
+                                new PagedListRenderOptions
+                                {
+                                    Display = PagedListDisplayMode.IfNeeded,
+                                    DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+                                    DisplayLinkToLastPage = PagedListDisplayMode.Always,
+                                    DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+                                    DisplayLinkToNextPage = PagedListDisplayMode.Always,
+                                    ClassToApplyToFirstListItemInPager = "page-item",
+                                    ClassToApplyToLastListItemInPager = "page-item",
+                                    ContainerDivClasses = new[] { "pagination-wrapper" },
+                                    UlElementClasses = new[] { "pagination" },
+                                    LiElementClasses = new[] { "page-item" },
+                                    PageClasses = new[] { "page-link" }
+                                })
+            </div>
+                        }
+        </div>
+    </main>
+    <script src="/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/store-index.js"></script>
+    <script src="~/js/home.js"></script>
+    <script src="/js/cart.js"></script>
+</body>

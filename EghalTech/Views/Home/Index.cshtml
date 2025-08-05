@@ -1,0 +1,140 @@
+﻿@model HomeViewModel
+@{
+    ViewData["Title"] = "Home";
+}
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">
+                    Discover the Latest in
+                    <span class="text-gradient">Technology</span>
+                </h1>
+                <p class="hero-description">
+                    From cutting-edge smartphones to powerful laptops, find the perfect tech
+                    gadgets that fit your lifestyle. Quality products, competitive prices,
+                    and exceptional service.
+                </p>
+                <div class="hero-actions">
+                    <a asp-action="Index" asp-controller="Store" class="btn btn-primary btn-large">
+                        <i class="bi bi-arrow-right"></i>
+                        Shop Now
+                    </a>
+                    <a href="#fott" class="btn btn-secondary btn-large">
+                        Learn More
+                    </a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">10K+</span>
+                        <span class="stat-label">Happy Customers</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">500+</span>
+                        <span class="stat-label">Products</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">24/7</span>
+                        <span class="stat-label">Support</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="~/img/EghalTechLogo.png" alt="Latest Technology" class="hero-img">
+                <div class="hero-image-overlay">
+                    <div class="floating-card">
+                        <i class="bi bi-lightning-charge"></i>
+                        <span>Fast Delivery</span>
+                    </div>
+                    <div class="floating-card">
+                        <i class="bi bi-shield-check"></i>
+                        <span>Warranty</span>
+                    </div>
+                    <div class="floating-card">
+                        <i class="bi bi-headset"></i>
+                        <span>24/7 Support</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Categories -->
+<section class="categories-section">
+    <partial name="_CategoryPartial" model="Model.Categories"></partial>
+</section>
+
+<!-- Featured Products -->
+<section class="featured-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Featured Products</h2>
+            <p class="section-description">Handpicked products just for you</p>
+        </div>
+        <div class="products-grid">
+            <partial name="_FeaturedProductPartial" model="Model.FeaturedProducts"></partial>
+        </div>
+        <div class="section-footer">
+            <a asp-action="Index" asp-controller="Store" class="btn btn-secondary">
+                View All Products
+                <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="container">
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-truck"></i>
+                </div>
+                <div class="feature-content">
+                    <h3 class="feature-title">Free Shipping</h3>
+                    <p class="feature-description">Free shipping on orders over $50</p>
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-arrow-clockwise"></i>
+                </div>
+                <div class="feature-content">
+                    <h3 class="feature-title">Easy Returns</h3>
+                    <p class="feature-description">30-day return policy</p>
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+                <div class="feature-content">
+                    <h3 class="feature-title">Secure Payment</h3>
+                    <p class="feature-description">100% secure transactions</p>
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-headset"></i>
+                </div>
+                <div class="feature-content">
+                    <h3 class="feature-title">24/7 Support</h3>
+                    <p class="feature-description">Round-the-clock customer service</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/home.css" />
+}
+
+@section Scripts {
+    <script src="~/js/home.js"></script>
+}

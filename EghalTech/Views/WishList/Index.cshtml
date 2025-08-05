@@ -1,0 +1,82 @@
+﻿@model List<WishListItem>
+@{
+    ViewData["Title"] = "Wishlist";
+}
+<head>
+    <link rel="stylesheet" href="/css/wish-list.css"/>
+</head>
+<div class="wishlist-container">
+    <div class="wishlist-header">
+        <h1 class="wishlist-title">Wishlist</h1>
+        <p class="wishlist-subtitle">Save your favorite products for later</p>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <!-- Wishlist Summary -->
+        <div class="wishlist-summary">
+            <div class="summary-item">
+                <span class="summary-label">Total Items</span>
+                <span class="summary-value items-count">@Model.Count</span>
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Total Value</span>
+                <span class="summary-value items-price">$@Model.Sum(x => x.Product.Price).ToString("N2")</span>
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">In Stock</span>
+                <span class="summary-value items-stock">@Model.Count(x => x.Product.StockQuantity > 0)</span>
+            </div>
+        </div>
+
+        <!-- Wishlist Items -->
+        @foreach (var item in Model)
+        {
+
+            <a asp-action="ProductDetails" asp-controller="Store" asp-route-id="@item.Product.Id" style="text-decoration:none">
+            <div class="wishlist-item" data-item-id="@item.Id">
+                <img src="/img/product/@item.Product.ImageUrl" alt="@item.Product.Name" class="product-image">
+                <div class="product-details">
+                    <h3 class="product-name">@item.Product.Name</h3>
+                    <div class="product-brand">@item.Product.Brand</div>
+                    <div class="product-category">@item.Product.Category.Name</div>
+                    <div class="stock-info @(item.Product.StockQuantity > 0 ? "" : "out-of-stock")">
+                        @if (item.Product.StockQuantity > 0)
+                        {
+                            <text>@item.Product.StockQuantity in stock</text>
+                        }
+                        else
+                        {
+                            <text>Out of stock</text>
+                        }
+                    </div>
+                </div>
+                
+                <div class="product-actions">
+                    <div class="product-price">$@item.Product.Price.ToString("N2")</div>
+                        <button class="action-btn remove-btn" title="Delete" onclick="DeleteFromWishList(@item.Id); event.stopPropagation(); return false;">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+            </a>
+        }
+    }
+        <!-- Empty State -->
+        <div class="empty-state" style="@(Model.Count > 0 ? "display:none;" : "")">
+            <div class="empty-state-icon">
+                <i class="fas fa-heart"></i>
+            </div>
+            <h2 class="empty-state-title">Your wishlist is empty</h2>
+            <p class="empty-state-text">
+                Start building your dream tech collection! Browse our latest products and add your favorites to your wishlist.
+            </p>
+            <a asp-action="Index" asp-controller="Store" class="btn-primary">
+                <i class="fas fa-shopping-bag"></i>
+                Start Shopping
+            </a>
+        </div>
+</div>
+
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">

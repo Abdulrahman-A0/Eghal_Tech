@@ -1,0 +1,173 @@
+﻿@model CartViewModel
+@{
+    ViewData["Title"] = "Shopping Cart - EghalTech";
+}
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/cart.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Main Content -->
+    <main class="main-content">
+    
+        <div class="empty-cart" id="emptyCart" style="@(Model.CartItems.Count == 0 ? "" : "display:none;")">
+            <div class="container">
+                <div class="empty-cart-content">
+                    <i class="bi bi-cart-x"></i>
+                    <h2>Your cart is empty</h2>
+                    <p>Looks like you haven't added any items to your cart yet.</p>
+                    <a asp-action="Index" asp-controller="Store" class="continue-shopping-btn">
+                        <i class="bi bi-arrow-left"></i>
+                        Continue Shopping
+                    </a>
+                </div>
+            </div>
+        </div>
+        @if (Model.CartItems.Any())
+        {
+        <div class="container" id="cartContainer">
+            <div class="cart-layout">
+
+                <!-- Cart Items Section -->
+                <div class="cart-items-section">
+                    <div class="section-header">
+                        <h2>Shopping Cart</h2>
+                        <span class="items-count">@Model.CartItems.Count</span>
+                    </div>
+
+                    <!-- Cart Items -->
+                    <div class="cart-items">
+                        @foreach(var item in Model.CartItems)
+                        {
+                            <div class="cart-item" data-item-id="@item.Id">
+                            <div class="item-image">
+                                <img src="/img/product/@item.Product.ImageUrl" alt="@item.Product.Name">
+                            </div>
+                            <div class="item-details">
+                                <h3 class="item-name">@item.Product.Name</h3>
+                                <p class="item-brand">@item.Product.Brand</p>
+                                <p class="item-category">@item.Product.Category.Name</p>
+                            </div>
+                            <div class="item-quantity">
+                                <label for="@item.Id" class="sr-only">Quantity </label>
+                                <div class="quantity-controls">
+                                    <input type="number" name="quantity" id="@item.Id-qty" class="qty-input" value="@item.Quantity" min="1" onchange="UpdateQuantity(@item.Id)">
+                                </div>
+                            </div>
+                            <div class="item-price" id="@item.Id-price">
+                                <span class="current-price">$@((item.Product.Price * @item.Quantity).ToString("F2"))</span>
+                            </div>
+                            <div class="item-actions">
+                                <button class="action-btn save-later-btn" title="Save for later">
+                                    <i class="bi bi-heart"></i>
+                                </button>
+                                <button class="action-btn remove-btn" title="Remove item" onclick="RemoveItem(@item.Id)">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                            </div>
+                            }
+                    </div>
+                </div>
+                        
+
+                <!-- Order Summary Section -->
+                <div class="order-summary-section">
+                    <div class="order-summary">
+                        <h3>Order Summary</h3>
+
+                        <div class="summary-row">
+                            <span>Subtotal (@Model.CartItems?.Count items)</span>
+                            <span class="subtotal-amount">@Model.Subtotal</span>
+                        </div>
+
+                        <div class="summary-row">
+                            <span>Shipping</span>
+                            <span class="shipping-amount">@Model.Shipping</span>
+                        </div>
+
+                        <div class="summary-row discount-row">
+                            <span>Discount</span>
+                            <span class="discount-amount">-$0.00</span>
+                        </div>
+
+                        <hr class="summary-divider">
+
+                        <div class="summary-row total-row">
+                            <span>Total</span>
+                            <span class="total-amount">@Model.Total</span>
+                        </div>
+
+                        <!-- Checkout Button -->
+                        <form asp-action="CreateCheckoutSession" asp-controller="Payment" method="post">
+                            <button type="submit" class="checkout-btn">
+                                <i class="bi bi-lock"></i>
+                                Proceed to Checkout
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <div class="toast-content">
+            <i class="toast-icon"></i>
+            <span class="toast-message"></span>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/cart.js"></script>
+    <script>
+        function RemoveItem(ItemId){
+            $.ajax({
+                url: `Cart/Delete`,
+                type : 'POST',
+                data : {cartItemId : ItemId},
+                success: function(result){
+                    $(`[data-item-id=${result.cartItemId}]`).remove();
+                    $(".cart-count").html(result.summary.cartCount);
+                    $(".items-count").html(result.summary.cartCount);
+                    $(".subtotal-amount").html(result.summary.subTotal);
+                    $(".total-amount").html(result.summary.total);
+
+                    if (result.summary.cartCount === 0) {
+                        $("#cartContainer").hide();
+                        $("#emptyCart").fadeIn();
+                    }
+            }});
+        }
+    </script>
+    <script>
+        function UpdateQuantity(ItemId){
+            let quantityInput = $(`#${ItemId}-qty`);
+            let quantity = parseInt(quantityInput.val());
+
+            if (isNaN(quantity) || quantity < 1) {
+                quantity = 1;
+                quantityInput.val(1); // reset input field
+            }
+            $.ajax({
+                url: `Cart/UpdateQuantity`,
+                type : 'POST',
+                data : {cartItemId: ItemId, quantity: quantity},
+                success: function(result){
+                    console.log(result);
+                    $(".cartCount").html(result.summary.cartCount);
+                    $(".subtotal-amount").html(result.summary.subTotal);
+                    $(".total-amount").html(result.summary.total);
+                    $(`#${ItemId}-price .current-price`).html(result.price);
+            }});
+        }
+    </script>
+</body>

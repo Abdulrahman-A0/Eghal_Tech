@@ -1,0 +1,56 @@
+﻿@model ProductCardViewModel
+@foreach(var prod in Model.Products)
+{
+    var isInWishlist = Model.WishListProductIds.Contains(prod.Id);
+
+    <a asp-action="ProductDetails" asp-controller="Store" asp-route-Id="@prod.Id" style="text-decoration:none">
+    <div class="product-card">
+        <div class="product-image">
+            <img src="/img/product/@prod.ImageUrl" alt="">
+            <div class="product-actions">
+                <button class="action-btn wishlist-btn @(isInWishlist ? "active" : "")"
+                        onclick="addToWishList(@prod.Id,this)">
+                    <i class="bi @(isInWishlist ? "bi-heart-fill" : "bi-heart")"></i>
+                </button>
+            </div>
+        </div>
+        <div class="product-info">
+            <div class="product-category">@prod.Category.Name</div>
+            <h3 class="product-title">@prod.Name</h3>
+            <div class="product-rating">
+                <div class="stars">
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                </div>
+                <span class="rating-count">@prod.Reviews.Count</span>
+            </div>
+            <div class="product-price">
+                <span class="current-price">$@prod.Price.ToString("F2")</span>
+            </div>
+            <div class="product-stock">
+                @if (prod.StockQuantity > 0)
+                {
+                    <span class="in-stock">
+                        <i class="bi bi-check-circle"></i>
+                        @prod.StockQuantity in stock
+                    </span>
+                }
+                else
+                {
+                    <span class="out-of-stock">
+                        <i class="bi bi-x-circle"></i>
+                        Out of stock
+                    </span>
+                }
+            </div>
+            <button class="add-to-cart-btn" id="@prod.Id-cart-btn" onclick="AddToCart(@prod.Id,this)">
+                <i class="bi bi-cart-plus"></i>
+                Add to Cart
+            </button>
+        </div>
+    </div>
+    </a>
+}

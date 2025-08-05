@@ -1,0 +1,135 @@
+﻿/* Import the base styles from add-product */
+@import url("./admin-add-product.css");
+
+/* Edit-specific styles */
+.page-header p {
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+.page-header strong {
+    color: #ef4444;
+    font-weight: 600;
+}
+
+/* Current Image Styles */
+.current-image-section {
+    margin-bottom: 1.5rem;
+}
+
+    .current-image-section label {
+        display: block;
+        font-weight: 500;
+        color: #000;
+        margin-bottom: 0.5rem;
+        font-size: 0.875rem;
+    }
+
+.current-image-container {
+    position: relative;
+    display: inline-block;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+}
+
+.current-image {
+    width: 200px;
+    height: 150px;
+    object-fit: cover;
+    display: block;
+}
+
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.current-image-container:hover .image-overlay {
+    opacity: 1;
+}
+
+.image-overlay .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.delete-icon {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* Removed image state */
+.current-image-container.removed {
+    opacity: 0.5;
+    position: relative;
+}
+
+    .current-image-container.removed::after {
+        content: "Image will be removed";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(239, 68, 68, 0.9);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+
+/* Text danger for validation */
+.text-danger {
+    color: #ef4444;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+/* Form modifications for edit */
+.form-actions .btn-secondary {
+    background-color: lightgray;
+    color: rgba(0, 0, 0, 0.7);
+    border: 1px solid #d1d5db;
+}
+
+    .form-actions .btn-secondary:hover {
+        background: #f9fafb;
+        color: #111827;
+    }
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .current-image {
+        width: 150px;
+        height: 112px;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+    }
+
+        .form-actions .btn {
+            width: 100%;
+        }
+}
+
+@media (max-width: 480px) {
+    .current-image {
+        width: 120px;
+        height: 90px;
+    }
+}

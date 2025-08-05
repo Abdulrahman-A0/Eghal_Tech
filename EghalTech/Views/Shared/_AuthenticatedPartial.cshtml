@@ -1,0 +1,25 @@
+﻿@using System.Security.Claims
+@model bool
+
+@{
+    string baseClass = Model ? "mobile-nav-link" : "header-btn";
+}
+
+@if (!User.Identity.IsAuthenticated)
+{
+    <a asp-action="Login" asp-controller="Account" class="@baseClass">
+        <i class="bi bi-box-arrow-in-left"></i>
+        <span>Login</span>
+    </a>
+}
+else
+{
+    <a asp-action="Profile" asp-controller="Account" class="@baseClass">
+        <i class="bi bi-person"></i>
+        <span>@User.FindFirst(ClaimTypes.GivenName)?.Value</span>
+    </a>
+    <a asp-action="Logout" asp-controller="Account" class="@baseClass">
+        <i class="bi bi-box-arrow-right"></i>
+        <span>Log Out</span>
+    </a>
+}

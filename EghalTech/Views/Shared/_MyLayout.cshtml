@@ -1,0 +1,209 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - EghalTech</title>
+    <link rel="stylesheet" href="~/css/layout.css" />
+    <link rel="stylesheet" href="~/css/MyStyle.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+    <!-- Header -->
+    <header class="main-header">
+        <div class="container header-container">
+            <div class="header-content">
+                <div class="header-left">
+                    <a asp-action="Index" asp-controller="Home" class="logo">
+                        <span class="logo-red">Eghal</span><span class="logo-black">Tech</span>
+                    </a>
+                    <nav class="main-nav">
+                        <a asp-action="Index" asp-controller="Home" class="nav-link">Home</a>
+                        <a asp-action="Index" asp-controller="Store" class="nav-link">Store</a>
+                        <a href="#fott" class="nav-link">About</a>
+                        <a href="#fott" class="nav-link">Contact</a>
+                        <div class="nav-dropdown">
+                            <a class="nav-link dropdown-trigger">
+                                Dashboard
+                                <i class="bi bi-chevron-down dropdown-icon"></i>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a asp-action="Index" asp-controller="Product" class="dropdown-link">Products</a></li>
+                                <li><a asp-action="Index" asp-controller="Category" class="dropdown-link">Categories</a></li>
+                                <li><a asp-action="Index" asp-controller="Orders" class="dropdown-link">Orders</a></li>
+                            </ul>
+                        </div>
+                        
+                    </nav>
+                </div>
+                <div class="header-right">
+                        <div class="search-container">
+                            <input type="text" name="prodName" value="@TempData["prodName"]" placeholder="Search products..." class="search-input">
+                            <button type="submit" class="search-btn">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    <div class="header-actions">
+                        <partial name="_AuthenticatedPartial" model="false" />
+                        <a asp-action="Index" asp-controller="WishList" class="header-btn">
+                            @await Component.InvokeAsync("WishList")
+                            <span>Wishlist</span>
+                        </a>
+                        <a asp-action="Index" asp-controller="Cart" class="header-btn cart-btn">
+                            <i class="bi bi-cart"></i>
+                            <span>Cart</span>
+                            @await Component.InvokeAsync("CartCount")
+                        </a>
+                    </div>
+                    <button class="mobile-menu-btn">
+                        <i class="bi bi-list"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-header">
+            <span class="logo">
+                <span class="logo-red">Eghal</span><span class="logo-black">Tech</span>
+            </span>
+            <button class="mobile-menu-close">
+                <i class="bi bi-x"></i>
+            </button>
+        </div>
+        <nav class="mobile-nav">
+            <a asp-action="Index" asp-controller="Home" class="mobile-nav-link">Home</a>
+            <a asp-action="Index" asp-controller="Store" class="mobile-nav-link">Store</a>
+            <a href="#fott" class="mobile-nav-link">About</a>
+            <a href="#fott" class="mobile-nav-link">Contact</a>
+            <div class="mobile-nav-divider"></div>
+            <div class="mobile-dropdown">
+                <button class="mobile-dropdown-trigger">
+                    <i class="bi bi-speedometer2"></i> Dashboard
+                    <i class="bi bi-chevron-down mobile-dropdown-icon"></i>
+                </button>
+                <div class="mobile-dropdown-content">
+                    <a asp-action="Index" asp-controller="Product" class="dropdown-link">
+                        <i class="bi bi-box"></i> Products
+                    </a>
+                    <a asp-action="Index" asp-controller="Category" class="dropdown-link">
+                        <i class="bi bi-tags"></i> Categories
+                    </a>
+                    <a asp-action="Index" asp-controller="Order" class="dropdown-link">
+                        <i class="bi bi-cart-check"></i> Orders
+                    </a>
+                </div>
+            </div>
+
+            <partial name="_AuthenticatedPartial" model="true" />
+            
+            <a asp-action="Index" asp-controller="WishList" class="mobile-nav-link">
+                <i class="bi bi-heart"></i> Wishlist
+            </a>
+            <a asp-action="Index" asp-controller="Cart" class="mobile-nav-link">
+                <i class="bi bi-cart"></i> Cart
+                @await Component.InvokeAsync("CartCount")
+            </a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <main >
+        @RenderBody()
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer" id="fott">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <span class="logo-red">Eghal</span><span class="logo-black">Tech</span>
+                    </div>
+                    <p class="footer-description">
+                        Your trusted partner for the latest technology and gadgets.
+                        We bring you cutting-edge products at competitive prices.
+                    </p>
+                    <div class="social-links">
+                        <a href="#" class="social-link">
+                            <i class="bi bi-facebook"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i class="bi bi-twitter"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i class="bi bi-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="@Url.Action("Index", "Home")">Home</a></li>
+                        <li><a href="@Url.Action("Products", "Store")">Products</a></li>
+                        <li><a href="@Url.Action("About", "Home")">About Us</a></li>
+                        <li><a href="@Url.Action("Contact", "Home")">Contact</a></li>
+                        <li><a href="@Url.Action("FAQ", "Home")">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Categories</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Smartphones</a></li>
+                        <li><a href="#">Laptops</a></li>
+                        <li><a href="#">Tablets</a></li>
+                        <li><a href="#">Headphones</a></li>
+                        <li><a href="#">Smart Watches</a></li>
+                        <li><a href="#">Accessories</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Customer Service</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Support Center</a></li>
+                        <li><a href="#">Shipping Info</a></li>
+                        <li><a href="#">Returns</a></li>
+                        <li><a href="#">Warranty</a></li>
+                        <li><a href="#">Track Order</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Newsletter</h3>
+                    <p>Subscribe to get updates on new products and offers.</p>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="Enter your email" class="newsletter-input">
+                        <button type="submit" class="newsletter-btn">
+                            <i class="bi bi-arrow-right"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-bottom-content">
+                    <p>&copy; 2024 EghalTech. All rights reserved.</p>
+                    <div class="footer-bottom-links">
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Terms of Service</a>
+                        <a href="#">Cookie Policy</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    
+    <script src="/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/layout.js"></script>
+    <script src="~/js/cart.js"></script>
+    <script src="~/js/WishList.js"></script>
+    
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
