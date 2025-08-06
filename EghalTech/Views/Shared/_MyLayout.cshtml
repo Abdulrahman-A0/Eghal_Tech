@@ -23,18 +23,21 @@
                         <a asp-action="Index" asp-controller="Store" class="nav-link">Store</a>
                         <a href="#fott" class="nav-link">About</a>
                         <a href="#fott" class="nav-link">Contact</a>
-                        <div class="nav-dropdown">
-                            <a class="nav-link dropdown-trigger">
-                                Dashboard
-                                <i class="bi bi-chevron-down dropdown-icon"></i>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a asp-action="Index" asp-controller="Product" class="dropdown-link">Products</a></li>
-                                <li><a asp-action="Index" asp-controller="Category" class="dropdown-link">Categories</a></li>
-                                <li><a asp-action="Index" asp-controller="Orders" class="dropdown-link">Orders</a></li>
-                            </ul>
-                        </div>
-                        
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <div class="nav-dropdown">
+                                <a class="nav-link dropdown-trigger">
+                                    Dashboard
+                                    <i class="bi bi-chevron-down dropdown-icon"></i>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a asp-action="Index" asp-controller="Product" class="dropdown-link">Products</a></li>
+                                    <li><a asp-action="Index" asp-controller="Category" class="dropdown-link">Categories</a></li>
+                                    <li><a asp-action="Index" asp-controller="Orders" class="dropdown-link">Orders</a></li>
+                                    <li><a asp-action="Index" asp-controller="Review" class="dropdown-link">Reviews</a></li>
+                                </ul>
+                            </div>
+                        }
                     </nav>
                 </div>
                 <div class="header-right">

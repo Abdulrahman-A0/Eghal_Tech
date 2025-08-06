@@ -27,7 +27,7 @@ namespace EghalTech.Controllers
         }
         public async Task<IActionResult> Index(int? page)
         {
-            var productList = productRepository.GetPaged(page ?? 1, pageSize: 9);
+            var productList = productRepository.GetPaged(page ?? 1, 9);
 
             var productCards = productList.Select(p => new ProductCard
             {
@@ -39,7 +39,7 @@ namespace EghalTech.Controllers
                 CategoryName = p.Category.Name,
                 AverageRating = p.Reviews != null && p.Reviews.Any() ? p.Reviews.Average(r => r.Rating) : 0,
                 ReviewCount = p.Reviews?.Count ?? 0,
-            }).ToPagedList();
+            });
 
             var user = await userManager.GetUserAsync(User);
 
@@ -107,7 +107,7 @@ namespace EghalTech.Controllers
                 CategoryName = p.Category.Name,
                 AverageRating = p.Reviews != null && p.Reviews.Any() ? p.Reviews.Average(r => r.Rating) : 0,
                 ReviewCount = p.Reviews?.Count ?? 0,
-            }).ToPagedList();
+            });
 
             var userId = userManager.GetUserId(User);
             var user = userManager.Users.FirstOrDefault(u => u.Id == userId);

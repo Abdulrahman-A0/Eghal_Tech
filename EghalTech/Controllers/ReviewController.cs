@@ -4,23 +4,49 @@ using EghalTech.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using X.PagedList.Extensions;
 
 namespace EghalTech.Controllers
 {
+    [Authorize]
     public class ReviewController : Controller
     {
         private readonly UserManager<User> userManager;
-        private readonly IRepository<Review> reviewRepository;
+        private readonly IPagedRepository<Review> reviewRepository;
 
         public ReviewController(UserManager<User> _userManager,
-            IRepository<Review> _reviewRepository)
+            IPagedRepository<Review> _reviewRepository)
         {
             userManager = _userManager;
             reviewRepository = _reviewRepository;
         }
 
+        public async Task<IActionResult> Index(int? page)
+        {
+            var user = await userManager.GetUserAsync(User);
+
+            var reviews = reviewRepository.GetPaged
+                (
+                    page ?? 1,
+                    pageSize: 8,
+                    filter: r => r.UserId == user.Id,
+                    includes: r => r.Product
+                );
+
+            var viewModel = reviews.Select(r => new ReviewViewModel
+            {
+                Id = r.Id,
+                ProductId = r.ProductId,
+                ProductName = r.Product.Name,
+                Comment = r.Comment,
+                Rating = r.Rating,
+                CreatedAt = r.CreatedAt
+            });
+
+            return View(viewModel);
+        }
+
         [HttpPost]
-        [Authorize]
         public IActionResult Add([FromBody] ReviewFormViewModel reviewModel)
         {
             if (ModelState.IsValid)
@@ -62,6 +88,15 @@ namespace EghalTech.Controllers
             );
 
             return BadRequest(new { success = false, errors });
+        }
+
+        [HttpPost]
+        public IActionResult Delete(int reviewId)
+        {
+            reviewRepository.Delete(reviewId);
+            reviewRepository.SaveChanges();
+
+            return Json(new { reviewId });
         }
     }
 }

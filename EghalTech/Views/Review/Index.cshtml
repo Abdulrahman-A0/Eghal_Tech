@@ -1,0 +1,99 @@
+﻿@model IPagedList<ReviewViewModel>
+@{
+    ViewData["Title"] = "My Reviews";
+}
+<head>
+    <link href="/css/review-index.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<div class="reviews-container">
+    <div class="reviews-header">
+        <h1 class="reviews-title">My Reviews</h1>
+        <p class="reviews-subtitle">Manage your product reviews and feedback</p>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <!-- Reviews List -->
+        @foreach (var review in Model)
+        {
+            <div class="review-card" data-item-id="@review.Id">
+                <div class="review-header">
+                    <div class="product-info">
+                        <h3 class="product-name">@review.ProductName</h3>
+                        <div class="review-date">
+                            Reviewed on @review.CreatedAt.ToString("MMMM dd, yyyy")
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rating-display">
+                    <div class="stars">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            <i class="fas fa-star @(i <= review.Rating ? "star" : "star empty")"></i>
+                        }
+                    </div>
+                    <span class="rating-text">@review.Rating out of 5 stars</span>
+                </div>
+
+                <div class="review-text">
+                    @review.Comment
+                </div>
+
+                <div class="review-actions">
+                    <a onclick="deleteReview(@review.Id)" class="btn-edit">
+                        <i class="fas fa-trash"></i>
+                        Delete Review
+                    </a>
+                    <a asp-action="ProductDetails" asp-controller="Store" asp-route-Id="@review.ProductId" class="btn-view-product">
+                        <i class="fas fa-eye"></i>
+                        View Product
+                    </a>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <!-- Empty State -->
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="fas fa-star"></i>
+            </div>
+            <h2 class="empty-state-title">No reviews yet</h2>
+            <p class="empty-state-text">
+                You haven't written any reviews yet. Start by purchasing products and sharing your experience with other customers.
+            </p>
+            <a href="@Url.Action("Index", "Store")" class="btn-primary">
+                <i class="fas fa-shopping-bag"></i>
+                Browse Products
+            </a>
+        </div>
+    }
+
+    @if (Model?.PageCount > 1)
+    {
+        <div class="pagination-container">
+            @Html.PagedListPager(Model, page =>
+            Url.Action("Index", new { page, search = Context.Request.Query["search"], sort = Context.Request.Query["sort"] }),
+                new PagedListRenderOptions
+                {
+                    Display = PagedListDisplayMode.IfNeeded,
+                    DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+                    DisplayLinkToLastPage = PagedListDisplayMode.Always,
+                    DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+                    DisplayLinkToNextPage = PagedListDisplayMode.Always,
+                    ClassToApplyToFirstListItemInPager = "page-item",
+                    ClassToApplyToLastListItemInPager = "page-item",
+                    ContainerDivClasses = new[] { "pagination-wrapper" },
+                    UlElementClasses = new[] { "pagination" },
+                    LiElementClasses = new[] { "page-item" },
+                    PageClasses = new[] { "page-link" }
+                })
+    </div>
+        }
+</div>
+
+<script src="~/js/review-index.js"></script>

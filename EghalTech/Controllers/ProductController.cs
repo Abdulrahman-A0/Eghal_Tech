@@ -9,6 +9,7 @@ using X.PagedList;
 namespace EghalTech.Controllers
 {
     //[Authorize(Roles ="Admin")]
+    [Authorize]
     public class ProductController : Controller
     {
         private readonly IProductRepository productRepository;

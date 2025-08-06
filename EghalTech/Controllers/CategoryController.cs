@@ -1,10 +1,12 @@
 ﻿using EghalTech.Models;
 using EghalTech.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using X.PagedList.Extensions;
 
 namespace EghalTech.Controllers
 {
+    [Authorize]
     public class CategoryController : Controller
     {
         private readonly IPagedRepository<Category> categoryRepository;
