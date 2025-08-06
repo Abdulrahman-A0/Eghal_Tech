@@ -46,17 +46,16 @@
 
                                     </div>
                                     <div class="product-info">
-                                        <div class="product-category">@prod.Category.Name</div>
+                                        <div class="product-category">@prod.CategoryName</div>
                                         <h3 class="product-title">@prod.Name</h3>
                                         <div class="product-rating">
                                             <div class="stars">
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
+                                            @for(int i = 1; i <= 5; i++)
+                                            {
+                                                <i class="bi @(i<=prod.AverageRating ? "bi-star-fill" : "bi-star")"></i>   
+                                            }
                                             </div>
-                                            <span class="rating-count">@(prod.Reviews?.Count ?? 0)</span>
+                                            <span class="rating-count">@(prod.ReviewCount)</span>
                                         </div>
                                         <div class="product-price">
                                             <span class="current-price">$@prod.Price.ToString("F2")</span>

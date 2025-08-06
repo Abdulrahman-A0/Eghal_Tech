@@ -37,12 +37,26 @@ namespace EghalTech.Controllers
                 wishListProductIds = user.WishList.WishlistItems.Select(i => i.ProductId).ToList();
             }
 
+            var featuredProducts = productRepository.GetFeaturedProducts(6);
+
+            var productCards = featuredProducts.Select(p => new ProductCard
+            {
+                Id = p.Id,
+                Name = p.Name,
+                ImageUrl = p.ImageUrl,
+                Price = p.Price,
+                StockQuantity = p.StockQuantity,
+                CategoryName = p.Category.Name,
+                AverageRating = p.Reviews != null && p.Reviews.Any() ? p.Reviews.Average(r => r.Rating) : 0,
+                ReviewCount = p.Reviews?.Count ?? 0,
+            }).ToPagedList();
+
             HomeViewModel viewModel = new HomeViewModel
             {
                 Categories = categoryRepository.GetAll(),
                 FeaturedProducts = new ProductCardViewModel
                 {
-                    Products = productRepository.GetFeaturedProducts(6).ToPagedList(),
+                    Products = productCards,
                     WishListProductIds = wishListProductIds
                 }
             };

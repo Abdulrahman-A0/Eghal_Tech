@@ -4,6 +4,7 @@ using EghalTech.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using X.PagedList;
+using X.PagedList.Extensions;
 
 namespace EghalTech.Controllers
 {
@@ -28,6 +29,18 @@ namespace EghalTech.Controllers
         {
             var productList = productRepository.GetPaged(page ?? 1, pageSize: 9);
 
+            var productCards = productList.Select(p => new ProductCard
+            {
+                Id = p.Id,
+                Name = p.Name,
+                ImageUrl = p.ImageUrl,
+                Price = p.Price,
+                StockQuantity = p.StockQuantity,
+                CategoryName = p.Category.Name,
+                AverageRating = p.Reviews != null && p.Reviews.Any() ? p.Reviews.Average(r => r.Rating) : 0,
+                ReviewCount = p.Reviews?.Count ?? 0,
+            }).ToPagedList();
+
             var user = await userManager.GetUserAsync(User);
 
             var wishListProductIds = new List<int>();
@@ -39,7 +52,7 @@ namespace EghalTech.Controllers
 
             var viewModel = new ProductCardViewModel
             {
-                Products = productList,
+                Products = productCards,
                 WishListProductIds = wishListProductIds
             };
 
@@ -84,6 +97,18 @@ namespace EghalTech.Controllers
                 filter: p => p.Name.Contains(prodName) || prodName == null
             );
 
+            var productCards = products.Select(p => new ProductCard
+            {
+                Id = p.Id,
+                Name = p.Name,
+                ImageUrl = p.ImageUrl,
+                Price = p.Price,
+                StockQuantity = p.StockQuantity,
+                CategoryName = p.Category.Name,
+                AverageRating = p.Reviews != null && p.Reviews.Any() ? p.Reviews.Average(r => r.Rating) : 0,
+                ReviewCount = p.Reviews?.Count ?? 0,
+            }).ToPagedList();
+
             var userId = userManager.GetUserId(User);
             var user = userManager.Users.FirstOrDefault(u => u.Id == userId);
 
@@ -95,7 +120,7 @@ namespace EghalTech.Controllers
 
             var viewModel = new ProductCardViewModel
             {
-                Products = products,
+                Products = productCards,
                 WishListProductIds = wishListProductIds
             };
 
