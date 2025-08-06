@@ -57,14 +57,15 @@ namespace EghalTech.Controllers
             List<Review> reviews = reviewRepository.GetByProductId(id);
 
             var userId = userManager.GetUserId(User);
+            var isInWishList = wishlistRepository.Exists(userId, product.Id);
 
             ProductDetailsViewModel viewModel = new ProductDetailsViewModel
             {
                 Product = product,
                 Reviews = reviews,
                 AverageRating = reviews.Any() ? reviews.Average(r => r.Rating) : 0,
-                ReviewCount = reviews.Count()
-
+                ReviewCount = reviews.Count(),
+                IsInWishList = isInWishList
             };
             return View(viewModel);
         }
@@ -83,8 +84,23 @@ namespace EghalTech.Controllers
                 filter: p => p.Name.Contains(prodName) || prodName == null
             );
 
+            var userId = userManager.GetUserId(User);
+            var user = userManager.Users.FirstOrDefault(u => u.Id == userId);
+
+            var wishListProductIds = new List<int>();
+            if (user?.WishList != null)
+            {
+                wishListProductIds = user.WishList.WishlistItems.Select(i => i.ProductId).ToList();
+            }
+
+            var viewModel = new ProductCardViewModel
+            {
+                Products = products,
+                WishListProductIds = wishListProductIds
+            };
+
             TempData["prodName"] = prodName;
-            return View("Index", products);
+            return View("Index", viewModel);
         }
     }
 }

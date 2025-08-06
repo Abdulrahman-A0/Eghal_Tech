@@ -368,23 +368,9 @@ body {
     padding: 0.75rem;
     border-radius: 0.5rem;
     transition: all 0.3s ease;
+    color: black;
 }
 
-
-
-    /* Make it red when active */
-    .wishlist-btn.active {
-        background-color: #ef4444;
-        color: white;
-        border-color: #ef4444;
-    }
-
-    /* Red hover when not active */
-    .wishlist-btn:hover {
-        background: #fef2f2;
-        border-color: #ef4444;
-        color: #ef4444;
-    }
 
 .buy-now-btn {
     width: 100%;
@@ -749,28 +735,6 @@ body {
     display: flex;
     gap: 1rem;
 }
-
-.helpful-btn,
-.report-btn {
-    background: none;
-    border: none;
-    color: #6b7280;
-    font-size: 0.875rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    transition: color 0.3s ease;
-}
-
-    .helpful-btn:hover {
-        color: #059669;
-    }
-
-    .report-btn:hover {
-        color: #dc2626;
-    }
-
 
 /* Responsive Design */
 @media (max-width: 768px) {

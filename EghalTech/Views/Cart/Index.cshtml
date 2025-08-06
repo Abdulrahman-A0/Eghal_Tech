@@ -43,6 +43,8 @@
                     <div class="cart-items">
                         @foreach(var item in Model.CartItems)
                         {
+                            var isInWishlist = Model.WishListProductIds.Contains(item.ProductId);
+
                             <div class="cart-item" data-item-id="@item.Id">
                             <div class="item-image">
                                 <img src="/img/product/@item.Product.ImageUrl" alt="@item.Product.Name">
@@ -62,8 +64,8 @@
                                 <span class="current-price">$@((item.Product.Price * @item.Quantity).ToString("F2"))</span>
                             </div>
                             <div class="item-actions">
-                                <button class="action-btn save-later-btn" title="Save for later">
-                                    <i class="bi bi-heart"></i>
+                                        <button class="action-btn wishlist-btn save-later-btn @(isInWishlist ? "active" : "")" onclick="addToWishList(@item.ProductId, this)">
+                                        <i class="bi @(isInWishlist ? "bi-heart-fill" : "bi-heart")"></i>
                                 </button>
                                 <button class="action-btn remove-btn" title="Remove item" onclick="RemoveItem(@item.Id)">
                                     <i class="bi bi-trash"></i>
@@ -127,6 +129,7 @@
     </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/home.js"></script>
     <script src="~/js/cart.js"></script>
     <script>
         function RemoveItem(ItemId){

@@ -30,7 +30,6 @@ function AddToCart(prodId, btnElement) {
             }, 500);
         },
         error: function (xhr) {
-            console.error("AddToCart failed", xhr.status, xhr.responseText);
             setTimeout(() => {
                 btnElement.innerHTML = originalContent;
                 btnElement.disabled = false;

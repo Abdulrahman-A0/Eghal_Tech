@@ -5,7 +5,8 @@ namespace EghalTech.Models
     public class Review
     {
         public int Id { get; set; }
-        [Range(1, 5, ErrorMessage = "Rating should be from 1 to 5")]
+
+        [Required(ErrorMessage = "Please Choose Your Rating")]
         public int Rating { get; set; }
         public string? Comment { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

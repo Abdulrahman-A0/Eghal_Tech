@@ -4,7 +4,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     initializeImageGallery()
     initializeProductTabs()
-    initializeReviewForm()
     initializeStarRatings()
 })
 
@@ -77,59 +76,6 @@ function initializeProductTabs() {
         })
     })
 }
-
-// Review Form Functionality
-function initializeReviewForm() {
-    const starRating = document.getElementById("starRating")
-    const ratingValue = document.getElementById("ratingValue")
-
-    if (starRating && ratingValue) {
-        const starBtns = starRating.querySelectorAll(".star-btn")
-
-        starBtns.forEach((btn, index) => {
-            btn.addEventListener("click", () => {
-                const rating = Number.parseInt(btn.dataset.rating)
-                ratingValue.value = rating
-
-                // Update star display
-                starBtns.forEach((starBtn, starIndex) => {
-                    if (starIndex < rating) {
-                        starBtn.classList.add("active")
-                        starBtn.innerHTML = '<i class="bi bi-star-fill"></i>'
-                    } else {
-                        starBtn.classList.remove("active")
-                        starBtn.innerHTML = '<i class="bi bi-star"></i>'
-                    }
-                })
-            })
-
-            // Hover effect
-            btn.addEventListener("mouseenter", () => {
-                const rating = Number.parseInt(btn.dataset.rating)
-                starBtns.forEach((starBtn, starIndex) => {
-                    if (starIndex < rating) {
-                        starBtn.innerHTML = '<i class="bi bi-star-fill"></i>'
-                    } else {
-                        starBtn.innerHTML = '<i class="bi bi-star"></i>'
-                    }
-                })
-            })
-        })
-
-        // Reset to selected rating on mouse leave
-        starRating.addEventListener("mouseleave", () => {
-            const currentRating = Number.parseInt(ratingValue.value)
-            starBtns.forEach((starBtn, starIndex) => {
-                if (starIndex < currentRating) {
-                    starBtn.innerHTML = '<i class="bi bi-star-fill"></i>'
-                } else {
-                    starBtn.innerHTML = '<i class="bi bi-star"></i>'
-                }
-            })
-        })
-    }
-}
-
 // Initialize Star Ratings Display
 function initializeStarRatings() {
     const starContainers = document.querySelectorAll(".stars")
@@ -181,76 +127,6 @@ function hideReviewForm() {
     }
 }
 
-// Helpful Button Functionality
-document.addEventListener("click", (e) => {
-    if (e.target.closest(".helpful-btn")) {
-        const btn = e.target.closest(".helpful-btn")
-        // In a real app, this would make an AJAX call to update the helpful count
-        showNotification("Thank you for your feedback!", "success")
-    }
-})
-
-// Add CSS for notifications and modal
-const style = document.createElement("style")
-style.textContent = `
-    @keyframes slideIn {
-        from {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
-
-    .image-modal {
-        display: none;
-        position: fixed;
-        z-index: 1000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.8);
-        cursor: pointer;
-    }
-
-    .image-modal-content {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        max-width: 90%;
-        max-height: 90%;
-        border-radius: 0.5rem;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-    }
-
-    .image-modal-close {
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        color: white;
-        font-size: 2rem;
-        font-weight: bold;
-        cursor: pointer;
-        background: rgba(0, 0, 0, 0.5);
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: background-color 0.3s ease;
-    }
-
-    .image-modal-close:hover {
-        background: rgba(0, 0, 0, 0.7);
-    }
-`
-document.head.appendChild(style)
-
 // Close modal with Escape key
 document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
@@ -261,3 +137,96 @@ document.addEventListener("keydown", (e) => {
         }
     }
 })
+
+// Review Form
+$(document).ready(function () {
+
+    // Star rating selection
+    $(".star-btn").click(function () {
+        const rating = $(this).data("rating");
+        $("#ratingValue").val(rating);
+        $(".star-btn").removeClass("active");
+        $(".star-btn i").removeClass("bi-star-fill").addClass("bi-star");
+        $(".star-btn").each(function () {
+            if ($(this).data("rating") <= rating) {
+                $(this).addClass("active");
+                $(this).find("i").removeClass("bi-star").addClass("bi-star-fill");
+            }
+        });
+    });
+
+    $("#submitReviewBtn").click(function () {
+
+        $("#ratingValidation").text("");
+        $("#commentValidation").text("");
+
+        const model = {
+            ProductId: $("#productId").val(),
+            Rating: parseInt($("#ratingValue").val()),
+            Comment: $("#reviewComment").val().trim()
+        };
+
+        let hasError = false;
+        if (model.Rating <= 0) {
+            $("#ratingValidation").text("Please select a rating.");
+            hasError = true;
+        }
+
+        if (hasError) return;
+
+        $.ajax({
+            url: "/Review/Add",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(model),
+            success: function (response) {
+                if (response.success) {
+                    const review = response.review;
+
+                    let stars = "";
+                    for (let i = 1; i <= 5; i++) {
+                        stars += `<i class="bi ${(i <= review.rating ? "bi-star-fill" : "bi-star")}"></i>`;
+                    }
+
+                    const html = `
+                    <div class="review-item">
+                        <div class="review-header">
+                            <div class="reviewer-info">
+                                <span class="reviewer-name">${review.userName}</span>
+                            </div>
+                            <div class="review-meta">
+                                <div class="stars" data-rating="${review.rating}">
+                                    ${stars}
+                                </div>
+                                <span class="review-date">${review.date}</span>
+                            </div>
+                        </div>
+                        <p class="review-comment">${review.comment}</p>
+                        <div class="review-actions"></div>
+                    </div>
+                `;
+                    $(".reviews-list").prepend(html);
+                    $("#reviewFormContainer").hide();
+                    $("#ratingValue").val(0);
+                    $("#reviewComment").val("");
+                    $(".star-btn i").removeClass("bi-star-fill").addClass("bi-star");
+                    showNotification("Thank you for your feedback!", "success");
+                }
+            },
+            error: function (xhr) {
+                if (xhr.status === 401 || xhr.responseText.includes("/Account/Login")) {
+                    window.location.href = "/Account/Login?ReturnUrl=" + encodeURIComponent(window.location.pathname);
+                }
+                else if (xhr.responseJSON?.errors) {
+                    const errors = xhr.responseJSON.errors;
+                    if (errors.Rating?.length) {
+                        $("#ratingValidation").text(errors.Rating[0]);
+                    }
+
+                } else {
+                    alert("Something went wrong. Please try again.");
+                }
+            }
+        });
+    });
+});

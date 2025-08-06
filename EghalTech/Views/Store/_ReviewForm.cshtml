@@ -1,0 +1,27 @@
+﻿@model ReviewFormViewModel
+
+<div id="reviewFormContainer">
+    <input type="hidden" name="ProductId" id="productId" value="@Model.ProductId">
+    <div class="form-group">
+        <label>Rating</label>
+        <div class="star-rating" id="starRating">
+            @for (int i = 1; i <= 5; i++)
+            {
+                <button type="button" class="star-btn" data-rating="@i"><i class="bi bi-star"></i></button>
+            }
+        </div>
+        <input type="hidden" name="Rating" id="ratingValue" value="0" required>
+        <span class="field-validation-error text-danger" id="ratingValidation"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="reviewComment">Your Review</label>
+        <textarea name="Comment" id="reviewComment" rows="4" placeholder="Share your experience with this product"></textarea>
+    </div>
+
+    <div class="form-actions">
+        <button class="submit-review-btn" id="submitReviewBtn">Submit Review</button>
+        <button type="button" class="cancel-btn" onclick="hideReviewForm()">Cancel</button>
+    </div>
+</div>
+

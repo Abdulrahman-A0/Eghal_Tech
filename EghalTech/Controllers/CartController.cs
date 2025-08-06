@@ -12,14 +12,17 @@ namespace EghalTech.Controllers
         private readonly IRepository<Cart> cartRepository;
         private readonly UserManager<User> userManager;
         private readonly IRepository<CartItem> cartItemRepository;
+        private readonly IWishlistRepository wishlistRepository;
 
         public CartController(IRepository<Cart> _cartRepository,
             UserManager<User> _userManager,
-            IRepository<CartItem> cartItemRepository)
+            IRepository<CartItem> cartItemRepository,
+            IWishlistRepository _wishlistRepository)
         {
             cartRepository = _cartRepository;
             userManager = _userManager;
             this.cartItemRepository = cartItemRepository;
+            wishlistRepository = _wishlistRepository;
         }
         public async Task<IActionResult> Index()
         {
@@ -33,12 +36,19 @@ namespace EghalTech.Controllers
             decimal shipping = 10;
             decimal total = subtotal + shipping;
 
+            var wishListProductIds = new List<int>();
+            if (user?.WishList != null)
+            {
+                wishListProductIds = user.WishList.WishlistItems.Select(i => i.ProductId).ToList();
+            }
+
             var viewModel = new CartViewModel
             {
                 CartItems = cartItems,
                 Subtotal = subtotal,
                 Shipping = shipping,
-                Total = total
+                Total = total,
+                WishListProductIds = wishListProductIds
             };
 
             return View(viewModel);

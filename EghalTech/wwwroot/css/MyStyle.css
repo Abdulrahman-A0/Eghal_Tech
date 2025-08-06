@@ -9,3 +9,32 @@
 .full-btn {
     width: 100% !important;
 }
+
+.wishlist-btn {
+    border-color: #d1d5db;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+    color: black;
+}
+
+
+
+    /* Make it red when active */
+    .wishlist-btn.active {
+        background-color: #ef4444;
+        color: white;
+        border-color: #ef4444;
+    }
+
+    /* Red hover when not active */
+    .wishlist-btn:hover {
+        background: #fef2f2;
+        border-color: #ef4444;
+        color: #ef4444;
+    }
+
+
+.text-danger {
+    color: #ef4444;
+}
