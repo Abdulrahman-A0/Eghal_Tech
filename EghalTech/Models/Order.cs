@@ -11,11 +11,19 @@ namespace EghalTech.Models
         public decimal TotalAmount { get; set; }
 
         public string Address { get; set; }
+        public OrderStatus Status { get; set; }
 
         public string? UserId { get; set; }
         public virtual User? User { get; set; }
 
         public virtual List<OrderItem> OrderItems { get; set; } = [];
 
+    }
+    public enum OrderStatus
+    {
+        Pending,
+        Shipped,
+        Delivered,
+        Cancelled
     }
 }

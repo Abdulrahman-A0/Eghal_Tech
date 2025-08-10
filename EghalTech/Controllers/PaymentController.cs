@@ -87,6 +87,7 @@ namespace EghalTech.Controllers
                 Address = user.Address,
                 UserId = user.Id,
                 OrderDate = DateTime.Now,
+                Status = OrderStatus.Pending,
                 OrderItems = orderItems
             };
 
