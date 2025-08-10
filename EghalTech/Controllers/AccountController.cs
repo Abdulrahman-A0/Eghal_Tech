@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Security.Claims;
 
 namespace EghalTech.Controllers
@@ -65,6 +66,7 @@ namespace EghalTech.Controllers
                 var result = await userManager.CreateAsync(user, userModel.Password);
                 if (result.Succeeded)
                 {
+                    await userManager.AddToRoleAsync(user, "Customer");
                     return RedirectToAction("LogIn");
                 }
                 else
