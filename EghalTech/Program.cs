@@ -39,6 +39,7 @@ namespace EghalTech
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
             builder.Services.AddScoped<IWishlistRepository, WishlistRepository>();
+            builder.Services.AddScoped<IUserDataCleaner, UserDataCleaner>();
 
             builder.Services.AddMemoryCache();
 

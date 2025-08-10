@@ -1,0 +1,158 @@
+﻿@model UserProfileViewModel
+@{
+    ViewData["Title"] = "My Profile";
+}
+<head>
+    <link href="/css/user-profile.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<div class="profile-container">
+    <div class="profile-header">
+        <h1 class="profile-title">My Profile</h1>
+        <p class="profile-subtitle">Manage your account information and preferences</p>
+    </div>
+
+    <!-- Account Statistics -->
+    <div class="account-stats">
+        <div class="stat-card">
+            <span class="stat-number">@Model.TotalOrders</span>
+            <div class="stat-label">Total Orders</div>
+        </div>
+        <div class="stat-card">
+            <span class="stat-number">@Model.WishlistItems</span>
+            <div class="stat-label">Wishlist Items</div>
+        </div>
+        <div class="stat-card">
+            <span class="stat-number">@Model.ReviewsCount</span>
+            <div class="stat-label">Reviews Written</div>
+        </div>
+    </div>
+
+    @if (ViewBag.SuccessMessage != null)
+    {
+        <div class="success-message">
+            <i class="fas fa-check-circle"></i>
+            @ViewBag.SuccessMessage
+        </div>
+    }
+    <!-- Profile Information Card -->
+    <div class="profile-card">
+        <div class="profile-avatar-section">
+            <div class="profile-avatar">
+                @Model.Name.Substring(0, 1).ToUpper()
+            </div>
+            <div class="profile-name">@Model.Name</div>
+            <div class="profile-email">@Model.Email</div>
+        </div>
+
+        <div class="profile-info">
+            <div class="info-section">
+                <h3 class="section-title">
+                    <i class="fas fa-user"></i>
+                    Personal Information
+                </h3>
+                <div class="info-item">
+                    <span class="info-label">
+                        <i class="fas fa-user"></i>
+                        Full Name
+                    </span>
+                    <span class="info-value">@Model.Name</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">
+                        <i class="fas fa-envelope"></i>
+                        Email Address
+                    </span>
+                    <span class="info-value">@Model.Email</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">
+                        <i class="fas fa-phone"></i>
+                        Phone Number
+                    </span>
+                    <span class="info-value">@Model.PhoneNumber</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">
+                        <i class="fa-solid fa-map-location-dot"></i>
+                        Address
+                    </span>
+                    <span class="info-value">@Model.Address</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-actions">
+            <a href="@Url.Action("Edit", "Account")" class="btn-primary">
+                <i class="fas fa-edit"></i>
+                Edit Profile
+            </a>
+            <a href="@Url.Action("ChangePassword", "Account")" class="btn-secondary">
+                <i class="fas fa-key"></i>
+                Change Password
+            </a>
+            <button type="button" class="btn-danger" onclick="openDeleteModal()">
+                <i class="fas fa-trash"></i>
+                Delete Account
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Account Confirmation Modal -->
+<div class="modal" id="deleteAccountModal">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h5 class="modal-title">
+                <i class="fas fa-exclamation-triangle" style="color: #DC2626;"></i>
+                Delete Account
+            </h5>
+            <button type="button" class="modal-close" onclick="closeDeleteModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <p style="color: var(--eghal-dark); margin-bottom: 1rem;">
+                <strong>Are you sure you want to delete your account?</strong>
+            </p>
+            <p style="color: var(--eghal-gray); margin-bottom: 1rem;">
+                You can reactivate your account by registering again. but
+                some of your data, including:
+            </p>
+            <ul style="color: var(--eghal-gray); margin-bottom: 1rem;">
+                <li>Cart items</li>
+                <li>Wishlist items</li>
+                <li>Reviews and ratings</li>
+            </ul>
+            <p style="color: var(--eghal-gray);">
+                will be permanently deleted.
+            </p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="modal-btn modal-btn-secondary" onclick="closeDeleteModal()">
+                Cancel
+            </button>
+            <form method="post" asp-action="DeleteAccount" asp-controller="Account" style="display: inline;">
+                <button type="submit" class="modal-btn modal-btn-danger">
+                    <i class="fas fa-trash"></i>
+                    Delete My Account
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/user-profile.js"></script>
+
+<script>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <text>
+            document.addEventListener("DOMContentLoaded", function () {
+                showNotification("@(TempData["SuccessMessage"])", "success");
+            });
+        </text>
+    }
+</script>

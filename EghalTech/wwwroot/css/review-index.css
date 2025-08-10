@@ -32,36 +32,6 @@
     font-size: 1rem;
 }
 
-.reviews-stats {
-    background: white;
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    margin-bottom: 2rem;
-    display: flex;
-    justify-content: space-around;
-    text-align: center;
-}
-
-.stat-item {
-    flex: 1;
-}
-
-.stat-number {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--eghal-red);
-    display: block;
-}
-
-.stat-label {
-    color: var(--eghal-gray);
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-top: 0.25rem;
-}
-
 .review-card {
     background: white;
     border-radius: 12px;

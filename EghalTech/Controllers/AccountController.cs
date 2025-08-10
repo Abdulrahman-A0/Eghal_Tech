@@ -1,5 +1,7 @@
 ﻿using EghalTech.Models;
+using EghalTech.Repository;
 using EghalTech.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,11 +14,16 @@ namespace EghalTech.Controllers
     {
         private readonly UserManager<User> userManager;
         private readonly SignInManager<User> signInManager;
+        private readonly IUserDataCleaner userDataCleaner;
+        private readonly IRepository<WishList> wishlistRepository;
 
-        public AccountController(UserManager<User> _userManager, SignInManager<User> _signInManager)
+        public AccountController(UserManager<User> _userManager,
+            SignInManager<User> _signInManager,
+            IUserDataCleaner _userDataCleaner)
         {
             userManager = _userManager;
             signInManager = _signInManager;
+            userDataCleaner = _userDataCleaner;
         }
 
         [HttpGet]
@@ -139,6 +146,132 @@ namespace EghalTech.Controllers
             }
 
             return RedirectToAction("Login");
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Profile()
+        {
+            var user = await userManager.GetUserAsync(User);
+
+            var viewModel = new UserProfileViewModel
+            {
+                Email = user.Email,
+                Name = user.Name,
+                PhoneNumber = user.PhoneNumber,
+                Address = user.Address,
+                ReviewsCount = user.Reviews?.Count ?? 0,
+                TotalOrders = user.Orders?.Count ?? 0,
+                WishlistItems = user.WishList?.WishlistItems?.Count ?? 0
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteAccount()
+        {
+            var user = await userManager.GetUserAsync(User);
+            userDataCleaner.DeleteUserDataAsync(user);
+
+            user.IsDeleted = true;
+            var result = await userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+            {
+
+                ModelState.AddModelError(string.Empty, "Something went wrong while deleting the account.");
+                return RedirectToAction("Profile", "Account");
+            }
+
+            await signInManager.SignOutAsync();
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Edit()
+        {
+            var user = await userManager.GetUserAsync(User);
+
+            var viewModel = new EditProfileViewModel
+            {
+                Email = user.Email,
+                Name = user.Name,
+                PhoneNumber = user.PhoneNumber,
+                Address = user.Address
+            };
+            return View(viewModel);
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(EditProfileViewModel userModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await userManager.GetUserAsync(User);
+                user.Name = userModel.Name;
+                user.PhoneNumber = userModel.PhoneNumber;
+                user.Address = userModel.Address;
+
+                if (user.Email != userModel.Email)
+                {
+                    var emailToken = await userManager.GenerateChangeEmailTokenAsync(user, userModel.Email);
+                    var emailChangeResult = await userManager.ChangeEmailAsync(user, userModel.Email, emailToken);
+                    if (!emailChangeResult.Succeeded)
+                    {
+                        foreach (var error in emailChangeResult.Errors)
+                            ModelState.AddModelError("", error.Description);
+                        return View(userModel);
+                    }
+                }
+
+                var result = await userManager.UpdateAsync(user);
+                if (result.Succeeded)
+                {
+                    TempData["SuccessMessage"] = "Your profile has been updated successfully.";
+                    return RedirectToAction("Profile");
+                }
+                else
+                {
+                    foreach (var error in result.Errors)
+                        ModelState.AddModelError("", error.Description);
+                    return View(userModel);
+                }
+            }
+
+            return View(userModel);
+        }
+
+        [Authorize]
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await userManager.GetUserAsync(User);
+                var result = await userManager.ChangePasswordAsync(user, viewModel.CurrentPassword, viewModel.NewPassword);
+                if (result.Succeeded)
+                {
+                    TempData["SuccessMessage"] = "Your password changed successfully";
+                    return RedirectToAction("Profile");
+                }
+                else
+                {
+                    foreach (var error in result.Errors)
+                        ModelState.AddModelError("", error.Description);
+                }
+            }
+            return View(viewModel);
         }
     }
 }
