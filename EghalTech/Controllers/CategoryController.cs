@@ -2,11 +2,12 @@
 using EghalTech.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 using X.PagedList.Extensions;
 
 namespace EghalTech.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class CategoryController : Controller
     {
         private readonly IPagedRepository<Category> categoryRepository;
@@ -80,13 +81,14 @@ namespace EghalTech.Controllers
             return View(category);
         }
 
+        [HttpPost]
         public IActionResult Delete(int id)
         {
             categoryRepository.Delete(id);
             categoryRepository.SaveChanges();
 
             TempData["SuccessMessage"] = "Category Has Been Deleted";
-            return RedirectToAction("Index");
+            return Json(new { message = TempData["SuccessMessage"] });
         }
     }
 }

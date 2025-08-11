@@ -17,18 +17,21 @@
             <div class="header-right">
                 <nav class="admin-nav">
                     <ul class="nav-menu">
-                        <li class="nav-item @(currentController == "Product" ? "active" : "")">
-                            <a asp-controller="Product" asp-action="Index" class="nav-link">
-                                <i class="bi bi-box-seam"></i>
-                                Products
-                            </a>
-                        </li>
-                        <li class="nav-item @(currentController == "Category" ? "active" : "")">
-                            <a asp-controller="Category" asp-action="Index" class="nav-link">
-                                <i class="bi bi-tags"></i>
-                                Categories
-                            </a>
-                        </li>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item @(currentController == "Product" ? "active" : "")">
+                                <a asp-controller="Product" asp-action="Index" class="nav-link">
+                                    <i class="bi bi-box-seam"></i>
+                                    Products
+                                </a>
+                            </li>
+                            <li class="nav-item @(currentController == "Category" ? "active" : "")">
+                                <a asp-controller="Category" asp-action="Index" class="nav-link">
+                                    <i class="bi bi-tags"></i>
+                                    Categories
+                                </a>
+                            </li>
+                        }
                         <li class="nav-item @(currentController == "Order" ? "active" : "")">
                             <a asp-controller="Order" asp-action="Index" class="nav-link">
                                 <i class="bi bi-cart-check"></i>
@@ -67,8 +70,11 @@
             </button>
         </div>
         <ul class="mobile-nav-menu">
-            <li><a asp-controller="Product" asp-action="Index" class="mobile-nav-link @(currentController == "Product" ? "active" : "")"><i class="bi bi-box-seam"></i>Products</a></li>
-            <li><a asp-controller="Category" asp-action="Index" class="mobile-nav-link @(currentController == "Category" ? "active" : "")"><i class="bi bi-tags"></i>Categories</a></li>
+            @if (User.IsInRole("Admin"))
+            {
+                <li><a asp-controller="Product" asp-action="Index" class="mobile-nav-link @(currentController == "Product" ? "active" : "")"><i class="bi bi-box-seam"></i>Products</a></li>
+                <li><a asp-controller="Category" asp-action="Index" class="mobile-nav-link @(currentController == "Category" ? "active" : "")"><i class="bi bi-tags"></i>Categories</a></li>
+            }
             <li><a asp-controller="Order" asp-action="Index" class="mobile-nav-link @(currentController == "Order" ? "active" : "")"><i class="bi bi-cart-check"></i>Orders</a></li>
         </ul>
     </div>

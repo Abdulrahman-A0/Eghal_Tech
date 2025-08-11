@@ -99,7 +99,16 @@ function showDeleteModal(categoryId, categoryName) {
 
         // Define the event handler
         const confirmDeleteHandler = () => {
-            window.location.href = `/Category/Delete/${categoryId}`
+            $.ajax({
+                url: `/Category/Delete`,
+                type: `POST`,
+                data: { id: categoryId },
+                success: function (result) {
+                    showNotification(result.message, "success");
+                    closeDeleteModal();
+                    $(`[data-item-id=${categoryId}]`).remove();
+                }
+            })
         }
 
         // Add the event listener

@@ -53,6 +53,7 @@ namespace EghalTech.Controllers
                         Name = "Shipping"
                     }
                 },
+                Quantity = 1
             });
 
             var options = new SessionCreateOptions
