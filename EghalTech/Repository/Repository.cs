@@ -1,5 +1,6 @@
 ﻿using EghalTech.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace EghalTech.Repository
 {
@@ -8,7 +9,7 @@ namespace EghalTech.Repository
         protected readonly AppDbContext context;
         protected readonly DbSet<T> dbSet;
 
-        public Repository(AppDbContext _context) 
+        public Repository(AppDbContext _context)
         {
             context = _context;
             dbSet = _context.Set<T>();
@@ -28,9 +29,13 @@ namespace EghalTech.Repository
             return dbSet.ToList();
         }
 
-        public T GetById(int id)
+        public T GetById(int id, params Expression<Func<T, object>>[] includes)
         {
-            return dbSet.Find(id);
+            IQueryable<T> query = dbSet;
+            foreach (var include in includes)
+                query = query.Include(include);
+
+            return query.FirstOrDefault(e => EF.Property<int>(e, "Id") == id);
         }
 
         public void SaveChanges()
