@@ -16,7 +16,6 @@ namespace EghalTech.Controllers
         private readonly UserManager<User> userManager;
         private readonly SignInManager<User> signInManager;
         private readonly IUserDataCleaner userDataCleaner;
-        private readonly IRepository<WishList> wishlistRepository;
 
         public AccountController(UserManager<User> _userManager,
             SignInManager<User> _signInManager,

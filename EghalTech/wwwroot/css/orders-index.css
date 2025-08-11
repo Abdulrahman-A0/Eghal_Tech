@@ -1,0 +1,81 @@
+﻿.status-select {
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    background-color: white;
+    min-width: 120px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .status-select:focus {
+        outline: none;
+        border-color: #ef4444;
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+    }
+
+.order-id {
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
+    color: #374151;
+}
+
+.customer-name {
+    font-weight: 500;
+    color: #111827;
+}
+
+.order-date {
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+.total-price {
+    font-weight: 600;
+    color: #059669;
+}
+
+/* Status styling */
+.status-pending {
+    color: #d97706;
+    background-color: #fef3c7;
+}
+
+.status-shipped {
+    color: #2563eb;
+    background-color: #dbeafe;
+}
+
+.status-delivered {
+    color: #059669;
+    background-color: #d1fae5;
+}
+
+.status-cancelled {
+    color: #dc2626;
+    background-color: #fee2e2;
+}
+
+.search-order {
+    width: 250px;
+}
+/* Responsive adjustments for orders table */
+@media (max-width: 768px) {
+    .products-table {
+        min-width: 1000px; /* Increased for orders table */
+    }
+
+    .status-select {
+        min-width: 100px;
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .status-select {
+        min-width: 90px;
+        font-size: 0.7rem;
+    }
+}

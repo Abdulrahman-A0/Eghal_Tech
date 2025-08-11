@@ -42,6 +42,19 @@ namespace EghalTech.Controllers
                 });
             }
 
+            lineItems.Add(new SessionLineItemOptions
+            {
+                PriceData = new SessionLineItemPriceDataOptions
+                {
+                    UnitAmount = 10 * 100,
+                    Currency = "USD",
+                    ProductData = new SessionLineItemPriceDataProductDataOptions
+                    {
+                        Name = "Shipping"
+                    }
+                },
+            });
+
             var options = new SessionCreateOptions
             {
                 CustomerEmail = user.Email,

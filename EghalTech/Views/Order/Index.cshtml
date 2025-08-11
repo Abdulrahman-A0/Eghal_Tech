@@ -1,0 +1,169 @@
+﻿@model IPagedList<Order>
+@{
+    ViewData["Title"] = "Orders - EghalTech Admin";
+    Layout = null;
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/products-index.css">
+    <link rel="stylesheet" href="~/css/delete-modal.css">
+    <link rel="stylesheet" href="~/css/admin-navbar.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/orders-index.css">
+</head>
+<body>
+    <partial name="_AdminNavbar" />
+    <div class="products-banner">
+        <div class="container">
+            <h1 class="products-title">Orders</h1>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="container">
+            
+            <div class="action-bar">
+                <div class="search-container">
+                    <input type="text" id="searchBox" placeholder="Search (Order ID, Customer)" class="search-input search-order" />
+                    <i class="bi bi-search search-icon"></i>
+                </div>
+            </div>
+
+            
+            <div class="table-container">
+                <table class="products-table">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer Name</th>
+                            <th>Address</th>
+                            <th>Order Date</th>
+                            <th>Total Price</th>
+                            <th>Status</th>
+                            <th colspan="3">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach(var order in Model)
+                        {   
+                            <tr data-item-id="@order.Id">
+                                <td class="order-id">@order.Id</td>
+                                <td class="customer-name">@order.User?.Name</td>
+                                <td class="deliver-address">@order.Address</td>
+                                <td class="order-date">@order.OrderDate</td>
+                                <td class="total-price">@order.TotalAmount</td>
+                                <td>
+                                    <select class="status-select status-@order.Status.ToString().ToLower()" onchange="updateOrderStatus(this, @order.Id)">
+                                        @foreach(var stat in Enum.GetValues(typeof(OrderStatus)))
+                                        {
+                                            <option value="@stat.ToString().ToLower()" 
+                                                selected="@(order.Status==(OrderStatus)stat)">
+                                            @stat
+                                            </option> 
+                                        }
+                                    </select>
+                                </td>
+                                <td class="actions">
+                                    <a asp-controller="Order" asp-action="Details" asp-route-id="@order.Id" class="btn btn-details">
+                                        Details
+                                    </a>
+                                </td>
+                                <td class="actions">
+                                    <button type="button" class="btn btn-delete" onclick="showDeleteModal(@order.Id, '@order.Id')">
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                @* Empty state - uncomment when no orders *@
+                @if (!Model.Any())
+                {
+                    <div class="no-products">
+                        <i class="bi bi-receipt"></i>
+                        <h3>No orders found</h3>
+                        <p>Orders will appear here once customers start placing them.</p>
+                        <a asp-action="Create" asp-controller="Order" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i>
+                            Create New Order
+                        </a>
+                    </div>
+                }
+            </div>
+
+           
+            @if (Model.PageCount > 1)
+            {
+                <div class="pagination-container">
+                    @Html.PagedListPager(Model, page =>
+                    Url.Action("Index", new { page, searchTerm = Context.Request.Query["searchTerm"] }),
+                                new PagedListRenderOptions
+                                {
+                                    Display = PagedListDisplayMode.IfNeeded,
+                                    DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+                                    DisplayLinkToLastPage = PagedListDisplayMode.Always,
+                                    DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+                                    DisplayLinkToNextPage = PagedListDisplayMode.Always,
+                                    ClassToApplyToFirstListItemInPager = "page-item",
+                                    ClassToApplyToLastListItemInPager = "page-item",
+                                    ContainerDivClasses = new[] { "pagination-wrapper" },
+                                    UlElementClasses = new[] { "pagination" },
+                                    LiElementClasses = new[] { "page-item" },
+                                    PageClasses = new[] { "page-link" }
+                                })
+                </div>
+            }
+        </div>
+    </div>
+
+    
+    <div id="deleteModal" class="delete-modal">
+        <div class="delete-modal-content">
+            <div class="delete-modal-header">
+                <h3>Confirm Delete</h3>
+                <button type="button" class="delete-modal-close" onclick="closeDeleteModal()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+            <div class="delete-modal-body">
+                <div class="delete-warning-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                    </svg>
+                </div>
+                <p>Are you sure you want to delete order <strong id="orderIdToDelete"></strong>?</p>
+                <p class="delete-warning">This action cannot be undone.</p>
+            </div>
+            <div class="delete-modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+                <button type="button" class="btn btn-delete" id="confirmDeleteBtn">Delete Order</button>
+            </div>
+        </div>
+    </div>
+
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/js/admin-navbar.js"></script>
+<script src="~/js/orders-index.js"></script>
+<script src="~/js/layout.js"></script>
+
+<script>
+    @if (TempData["SuccessMessage"] != null)
+    {
+            <text>
+                showNotification("@TempData["SuccessMessage"]", "success");
+            </text>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+            <text>
+                showNotification("@TempData["ErrorMessage"]", "error");
+            </text>
+    }
+</script>
+</body>

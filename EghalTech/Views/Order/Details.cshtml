@@ -1,0 +1,152 @@
+﻿@model OrderDetailsViewModel
+@{
+    ViewData["Title"] = $"Order Details - {Model.Id}";
+    Layout = null;
+}
+<head>
+    <link rel="stylesheet" href="~/css/products-index.css">
+    <link rel="stylesheet" href="~/css/delete-modal.css">
+    <link rel="stylesheet" href="~/css/admin-navbar.css">
+    <link rel="stylesheet" href="~/css/order-details.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+
+<body>
+    <partial name="_AdminNavbar" />
+
+    <!-- Order Details Banner -->
+    <div class="products-banner">
+        <div class="container">
+            <h1 class="products-title">Order Details</h1>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="order-details-container">
+            <!-- Back Button -->
+            <a asp-action="Index" asp-controller="Order" class="back-button">
+                <i class="bi bi-arrow-left"></i>
+                Back to Orders
+            </a>
+
+            <!-- Order Header Information -->
+            <div class="order-header-card">
+                <div class="order-header-info">
+                    <div class="info-group">
+                        <span class="info-label">Order ID</span>
+                        <span class="info-value order-id-value">#ORD-@Model.Id.ToString("D6")</span>
+                    </div>
+                    <div class="info-group">
+                        <span class="info-label">Customer</span>
+                        <span class="info-value">@Model.CustomerName</span>
+                    </div>
+                    <div class="info-group">
+                        <span class="info-label">Order Date</span>
+                        <span class="info-value">@Model.OrderDate.ToString("MMMM dd, yyyy")</span>
+                    </div>
+                    <div class="info-group">
+                        <span class="info-label">Status</span>
+                        <span class="status-badge status-@Model.Status.ToString().ToLower()">
+                            @Model.Status
+                        </span>
+                    </div>
+                    <div class="info-group">
+                        <span class="info-label">Total Amount</span>
+                        <span class="info-value total-amount">$@Model.TotalAmount.ToString("N2")</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Items Section -->
+            <div class="order-items-card">
+                <div style="padding: 2rem 2rem 0 2rem;">
+                    <h2 class="section-title">
+                        <i class="bi bi-box-seam"></i>
+                        Order Items (@Model.OrderItems.Count)
+                    </h2>
+                </div>
+
+                @if (Model.OrderItems != null && Model.OrderItems.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="order-items-table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Unit Price</th>
+                                    <th>Quantity</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.OrderItems)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="product-info">
+                                                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                                {
+                                                    <img src="~/img/product/@item.ImageUrl" alt="@item.ProductName" class="product-image" />
+                                                }
+                                                else
+                                                {
+                                                    <div class="no-image-placeholder">
+                                                        <i class="bi bi-image"></i>
+                                                    </div>
+                                                }
+                                                <div class="product-details">
+                                                    <h4>@item.ProductName</h4>
+                                                    <p class="product-brand">@item.ProductBrand</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="unit-price">$@item.UnitPrice.ToString("N2")</td>
+                                        <td>
+                                            <span class="quantity-badge">@item.Quantity</span>
+                                        </td>
+                                        <td class="line-total">$@item.LineTotal.ToString("N2")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-order">
+                        <i class="bi bi-box-seam"></i>
+                        <h3>No items in this order</h3>
+                        <p>This order doesn't contain any items.</p>
+                    </div>
+                }
+            </div>
+
+            <!-- Order Summary -->
+            <div class="order-summary">
+                <h2 class="section-title">
+                    <i class="bi bi-calculator"></i>
+                    Order Summary
+                </h2>
+
+                <div class="summary-row">
+                    <span class="summary-label">Subtotal @(Model.OrderItems?.Count ?? 0) items</span>
+                    <span class="summary-value">$@Model.Subtotal.ToString("N2")</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Shipping</span>
+                    <span class="summary-value">
+                        <span style="color: #059669;">@Model.Shipping.ToString("N2")</span>
+                    </span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Total Amount</span>
+                    <span class="summary-value total-amount">$@Model.TotalAmount.ToString("N2")</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/admin-navbar.js"></script>
+</body>
