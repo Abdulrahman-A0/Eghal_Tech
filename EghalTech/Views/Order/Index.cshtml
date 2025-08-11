@@ -53,15 +53,24 @@
                                 <td class="order-date">@order.OrderDate</td>
                                 <td class="total-price">@order.TotalAmount</td>
                                 <td>
-                                    <select class="status-select status-@order.Status.ToString().ToLower()" onchange="updateOrderStatus(this, @order.Id)">
-                                        @foreach(var stat in Enum.GetValues(typeof(OrderStatus)))
-                                        {
-                                            <option value="@stat.ToString().ToLower()" 
-                                                selected="@(order.Status==(OrderStatus)stat)">
-                                            @stat
-                                            </option> 
-                                        }
-                                    </select>
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <select class="status-select status-@order.Status.ToString().ToLower()" onchange="updateOrderStatus(this, @order.Id)">
+                                            @foreach(var stat in Enum.GetValues(typeof(OrderStatus)))
+                                            {
+                                                <option value="@stat.ToString().ToLower()" 
+                                                    selected="@(order.Status==(OrderStatus)stat)">
+                                                @stat
+                                                </option> 
+                                            }
+                                        </select>
+                                    }
+                                    else
+                                    {
+                                        <p id="status-@order.Id" class="status-select status-@order.Status.ToString().ToLower()">
+                                            @order.Status.ToString()
+                                        </p>
+                                    }
                                 </td>
                                 <td class="actions">
                                     <a asp-controller="Order" asp-action="Details" asp-route-id="@order.Id" class="btn btn-details">
@@ -69,26 +78,48 @@
                                     </a>
                                 </td>
                                 <td class="actions">
-                                    <button type="button" class="btn btn-delete" onclick="showDeleteModal(@order.Id, '@order.Id')">
-                                        Delete
-                                    </button>
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <button type="button"
+												class="btn btn-delete"
+												onclick="showActionModal({
+                                                    orderId: 5,
+                                                    title: 'Confirm Delete',
+                                                    message: 'Are you sure you want to delete order {@order.Id}?',
+                                                    warning: 'This action cannot be undone.',
+                                                    buttonText: 'Delete Order',
+                                                    ajaxUrl: '/Order/Delete',
+                                                    removeSelector: true
+                                                })">
+                                            Delete
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button type="button" class="btn btn-delete" onclick="showActionModal({
+                                                orderId: @order.Id,
+                                                title: 'Confirm Cancellation',
+                                                message: 'Are you sure you want to cancel order {@order.Id}?',
+                                                warning: 'You can reorder later if needed.',
+                                                buttonText: 'Cancel Order',
+                                                ajaxUrl: '/Order/Cancel',
+                                                removeSelector: false
+                                                });" @(order.Status == OrderStatus.Delivered ? "disabled" : "")>
+                                            Cancel
+                                        </button>
+                                    }
                                 </td>
                             </tr>
                         }
                     </tbody>
                 </table>
 
-                @* Empty state - uncomment when no orders *@
                 @if (!Model.Any())
                 {
                     <div class="no-products">
                         <i class="bi bi-receipt"></i>
                         <h3>No orders found</h3>
                         <p>Orders will appear here once customers start placing them.</p>
-                        <a asp-action="Create" asp-controller="Order" class="btn btn-primary">
-                            <i class="bi bi-plus-circle"></i>
-                            Create New Order
-                        </a>
                     </div>
                 }
             </div>
@@ -119,11 +150,11 @@
     </div>
 
     
-    <div id="deleteModal" class="delete-modal">
+    <div id="actionModal" class="delete-modal">
         <div class="delete-modal-content">
             <div class="delete-modal-header">
-                <h3>Confirm Delete</h3>
-                <button type="button" class="delete-modal-close" onclick="closeDeleteModal()">
+                <h3 id="actionModalTitle"></h3>
+                <button type="button" class="delete-modal-close" onclick="closeActionModal()">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <line x1="18" y1="6" x2="6" y2="18" />
                         <line x1="6" y1="6" x2="18" y2="18" />
@@ -136,34 +167,20 @@
                         <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
                     </svg>
                 </div>
-                <p>Are you sure you want to delete order <strong id="orderIdToDelete"></strong>?</p>
-                <p class="delete-warning">This action cannot be undone.</p>
+                <p id="actionModalMessage"></p>
+                <p class="delete-warning" id="actionWarningText"></p>
             </div>
             <div class="delete-modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeDeleteModal()">Cancel</button>
-                <button type="button" class="btn btn-delete" id="confirmDeleteBtn">Delete Order</button>
+                <button type="button" class="btn btn-secondary" onclick="closeActionModal()">Cancel</button>
+                <button type="button" class="btn btn-delete" id="confirmActionBtn"></button>
             </div>
         </div>
     </div>
+
 
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/js/admin-navbar.js"></script>
 <script src="~/js/orders-index.js"></script>
 <script src="~/js/layout.js"></script>
-
-<script>
-    @if (TempData["SuccessMessage"] != null)
-    {
-            <text>
-                showNotification("@TempData["SuccessMessage"]", "success");
-            </text>
-    }
-    @if (TempData["ErrorMessage"] != null)
-    {
-            <text>
-                showNotification("@TempData["ErrorMessage"]", "error");
-            </text>
-    }
-</script>
 </body>

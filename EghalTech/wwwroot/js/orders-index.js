@@ -67,40 +67,91 @@ function updateOrderStatus(selectElement, orderId) {
 }
 
 // Delete modal functions
-function showDeleteModal(orderId, orderNumber) {
-    document.getElementById('orderIdToDelete').innerText = orderNumber;
-    document.getElementById('deleteModal').style.display = 'flex';
+//function showDeleteModal(orderId, orderNumber) {
+//    document.getElementById('orderIdToDelete').innerText = orderNumber;
+//    document.getElementById('deleteModal').style.display = 'flex';
 
-    // Remove any existing event listeners to prevent multiple calls
-    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+//    // Remove any existing event listeners to prevent multiple calls
+//    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
 
-    // Define the event handler
-    const confirmDeleteHandler = function () {
+//    // Define the event handler
+//    const confirmDeleteHandler = function () {
+//        $.ajax({
+//            url: `/Order/Delete`,
+//            type: `POST`,
+//            data: { ordId: orderId },
+//            success: function (result) {
+//                showNotification(result.message, "success");
+//                closeDeleteModal();
+//                $(`[data-item-id=${orderId}]`).remove();
+//            }
+//        })
+//    };
+
+//    confirmDeleteBtn.removeEventListener('click', confirmDeleteHandler);
+//    // Add the event listener
+//    confirmDeleteBtn.addEventListener('click', confirmDeleteHandler);
+//}
+
+//function closeDeleteModal() {
+//    document.getElementById('deleteModal').style.display = 'none';
+//}
+
+//// Close modal when clicking outside
+//window.addEventListener('click', function (event) {
+//    const modal = document.getElementById('deleteModal');
+//    if (event.target === modal) {
+//        closeDeleteModal();
+//    }
+//});
+
+
+
+function showActionModal(options) {
+    const { orderId, title, message, warning, buttonText, ajaxUrl, removeSelector } = options;
+
+    document.getElementById('actionModalTitle').innerText = title;
+    document.getElementById('actionModalMessage').innerHTML = message.replace('{orderId}', `<strong>${orderId}</strong>`);
+    document.getElementById('actionWarningText').innerText = warning;
+    const confirmBtn = document.getElementById('confirmActionBtn');
+    confirmBtn.innerText = buttonText;
+
+    document.getElementById('actionModal').style.display = 'flex';
+
+    // Remove old listeners
+    const newConfirmBtn = confirmBtn.cloneNode(true);
+    confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+
+    // Add new listener for this action
+    newConfirmBtn.addEventListener('click', function () {
         $.ajax({
-            url: `/Order/Delete`,
-            type: `POST`,
+            url: ajaxUrl,
+            type: 'POST',
             data: { ordId: orderId },
             success: function (result) {
                 showNotification(result.message, "success");
-                closeDeleteModal();
-                $(`[data-item-id=${orderId}]`).remove();
+                closeActionModal();
+                if (removeSelector) {
+                    $(`[data-item-id=${orderId}]`).remove();
+                }
+                else {
+                    const statusEl = document.getElementById(`status-${orderId}`);
+                    statusEl.textContent = "Cancelled";
+                    statusEl.className = "status-select status-cancelled";
+                }
             }
-        })
-    };
-
-    confirmDeleteBtn.removeEventListener('click', confirmDeleteHandler);
-    // Add the event listener
-    confirmDeleteBtn.addEventListener('click', confirmDeleteHandler);
+        });
+    });
 }
 
-function closeDeleteModal() {
-    document.getElementById('deleteModal').style.display = 'none';
+function closeActionModal() {
+    document.getElementById('actionModal').style.display = 'none';
 }
 
-// Close modal when clicking outside
+// Close when clicking outside
 window.addEventListener('click', function (event) {
-    const modal = document.getElementById('deleteModal');
+    const modal = document.getElementById('actionModal');
     if (event.target === modal) {
-        closeDeleteModal();
+        closeActionModal();
     }
 });

@@ -2,7 +2,9 @@
 using EghalTech.Repository;
 using EghalTech.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using X.PagedList;
 
 namespace EghalTech.Controllers
 {
@@ -10,19 +12,36 @@ namespace EghalTech.Controllers
     public class OrderController : Controller
     {
         private readonly IPagedRepository<Order> orderRepository;
+        private readonly UserManager<User> userManager;
 
-        public OrderController(IPagedRepository<Order> _orderRepository)
+        public OrderController(IPagedRepository<Order> _orderRepository,
+            UserManager<User> _userManager)
         {
             orderRepository = _orderRepository;
+            userManager = _userManager;
         }
 
         public IActionResult Index(int? page)
         {
-            var orderList = orderRepository.GetPaged(page ?? 1);
+            IPagedList<Order> orderList;
+            var pageNumber = page ?? 1;
+            if (User.IsInRole("Admin"))
+            {
+                orderList = orderRepository.GetPaged(pageNumber);
+            }
+            else
+            {
+                var userId = userManager.GetUserId(User);
+                orderList = orderRepository.GetPaged
+                    (
+                        pageNumber,
+                        filter: o => o.UserId == userId
+                    );
+            }
             return View(orderList);
         }
 
-        //[Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public IActionResult UpdateStatus(int ordId, string status)
         {
@@ -45,7 +64,7 @@ namespace EghalTech.Controllers
             return BadRequest("Invalid status value");
         }
 
-        //[Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public IActionResult Delete(int ordId)
         {
@@ -84,6 +103,18 @@ namespace EghalTech.Controllers
                 Shipping = 10
             };
             return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult Cancel(int ordId)
+        {
+            var order = orderRepository.GetById(ordId);
+            order.Status = OrderStatus.Cancelled;
+            orderRepository.Update(order);
+            orderRepository.SaveChanges();
+
+            TempData["Message"] = "Order has been cancelled";
+            return Json(new { message = TempData["Message"] });
         }
     }
 }
