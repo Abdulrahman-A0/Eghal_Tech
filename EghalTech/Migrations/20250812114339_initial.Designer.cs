@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EghalTech.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250723092507_Initial")]
-    partial class Initial
+    [Migration("20250812114339_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -128,7 +128,7 @@ namespace EghalTech.Migrations
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("PaymentStatus")
+                    b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.Property<decimal>("TotalAmount")
@@ -219,7 +219,7 @@ namespace EghalTech.Migrations
                             Brand = "Dell",
                             CategoryId = 1,
                             Description = "13-inch ultrabook with Intel i7 processor.",
-                            ImageUrl = "dell-xps-13.jpg",
+                            ImageUrl = "dell-xps-13.webp",
                             Name = "Dell XPS 13",
                             Price = 999.99m,
                             StockQuantity = 15
@@ -230,7 +230,7 @@ namespace EghalTech.Migrations
                             Brand = "Apple",
                             CategoryId = 1,
                             Description = "Apple's lightest laptop with M2 chip.",
-                            ImageUrl = "macbook-air-m2.jpg",
+                            ImageUrl = "macbook-air-m2.webp",
                             Name = "MacBook Air M2",
                             Price = 1199.99m,
                             StockQuantity = 10
@@ -241,7 +241,7 @@ namespace EghalTech.Migrations
                             Brand = "HP",
                             CategoryId = 1,
                             Description = "Convertible laptop with touch screen.",
-                            ImageUrl = "hp-spectre.jpg",
+                            ImageUrl = "hp-spectre.webp",
                             Name = "HP Spectre x360",
                             Price = 1099.99m,
                             StockQuantity = 12
@@ -252,7 +252,7 @@ namespace EghalTech.Migrations
                             Brand = "Apple",
                             CategoryId = 2,
                             Description = "Flagship Apple smartphone with A16 Bionic chip.",
-                            ImageUrl = "iphone-14-pro.jpg",
+                            ImageUrl = "iphone-14-pro.webp",
                             Name = "iPhone 14 Pro",
                             Price = 999.99m,
                             StockQuantity = 20
@@ -263,7 +263,7 @@ namespace EghalTech.Migrations
                             Brand = "Samsung",
                             CategoryId = 2,
                             Description = "High-end Android smartphone from Samsung.",
-                            ImageUrl = "galaxy-s23.jpg",
+                            ImageUrl = "galaxy-s23.webp",
                             Name = "Samsung Galaxy S23",
                             Price = 899.99m,
                             StockQuantity = 18
@@ -274,7 +274,7 @@ namespace EghalTech.Migrations
                             Brand = "Google",
                             CategoryId = 2,
                             Description = "Clean Android experience with excellent camera.",
-                            ImageUrl = "pixel-7.jpg",
+                            ImageUrl = "pixel-7.webp",
                             Name = "Google Pixel 7",
                             Price = 799.99m,
                             StockQuantity = 14
@@ -285,7 +285,7 @@ namespace EghalTech.Migrations
                             Brand = "Logitech",
                             CategoryId = 3,
                             Description = "Premium wireless mouse for productivity.",
-                            ImageUrl = "mx-master-3.jpg",
+                            ImageUrl = "mx-master-3.webp",
                             Name = "Logitech MX Master 3",
                             Price = 99.99m,
                             StockQuantity = 25
@@ -296,7 +296,7 @@ namespace EghalTech.Migrations
                             Brand = "Keychron",
                             CategoryId = 3,
                             Description = "Compact mechanical keyboard with RGB lighting.",
-                            ImageUrl = "keychron-k6.jpg",
+                            ImageUrl = "keychron-k6.webp",
                             Name = "Keychron K6 Mechanical Keyboard",
                             Price = 79.99m,
                             StockQuantity = 30
@@ -307,7 +307,7 @@ namespace EghalTech.Migrations
                             Brand = "Anker",
                             CategoryId = 3,
                             Description = "Portable charger with 10000mAh capacity.",
-                            ImageUrl = "anker-powercore.jpg",
+                            ImageUrl = "anker-powercore.webp",
                             Name = "Anker PowerCore 10000",
                             Price = 39.99m,
                             StockQuantity = 50
@@ -318,7 +318,7 @@ namespace EghalTech.Migrations
                             Brand = "Sony",
                             CategoryId = 4,
                             Description = "Top-rated noise-cancelling headphones.",
-                            ImageUrl = "sony-wh-1000xm5.jpg",
+                            ImageUrl = "sony-wh-1000xm5.webp",
                             Name = "Sony WH-1000XM5",
                             Price = 349.99m,
                             StockQuantity = 20
@@ -329,7 +329,7 @@ namespace EghalTech.Migrations
                             Brand = "Apple",
                             CategoryId = 4,
                             Description = "In-ear noise-cancelling earbuds from Apple.",
-                            ImageUrl = "airpods-pro-2.jpg",
+                            ImageUrl = "airpods-pro-2.webp",
                             Name = "Apple AirPods Pro 2",
                             Price = 249.99m,
                             StockQuantity = 30
@@ -340,7 +340,7 @@ namespace EghalTech.Migrations
                             Brand = "JBL",
                             CategoryId = 4,
                             Description = "Portable waterproof Bluetooth speaker.",
-                            ImageUrl = "jbl-flip-6.jpg",
+                            ImageUrl = "jbl-flip-6.webp",
                             Name = "JBL Flip 6 Bluetooth Speaker",
                             Price = 129.99m,
                             StockQuantity = 40

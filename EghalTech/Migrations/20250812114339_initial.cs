@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace EghalTech.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -201,8 +201,8 @@ namespace EghalTech.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    PaymentStatus = table.Column<int>(type: "int", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
@@ -384,18 +384,18 @@ namespace EghalTech.Migrations
                 columns: new[] { "Id", "Brand", "CategoryId", "Description", "ImageUrl", "Name", "Price", "StockQuantity" },
                 values: new object[,]
                 {
-                    { 1, "Dell", 1, "13-inch ultrabook with Intel i7 processor.", "dell-xps-13.jpg", "Dell XPS 13", 999.99m, 15 },
-                    { 2, "Apple", 1, "Apple's lightest laptop with M2 chip.", "macbook-air-m2.jpg", "MacBook Air M2", 1199.99m, 10 },
-                    { 3, "HP", 1, "Convertible laptop with touch screen.", "hp-spectre.jpg", "HP Spectre x360", 1099.99m, 12 },
-                    { 4, "Apple", 2, "Flagship Apple smartphone with A16 Bionic chip.", "iphone-14-pro.jpg", "iPhone 14 Pro", 999.99m, 20 },
-                    { 5, "Samsung", 2, "High-end Android smartphone from Samsung.", "galaxy-s23.jpg", "Samsung Galaxy S23", 899.99m, 18 },
-                    { 6, "Google", 2, "Clean Android experience with excellent camera.", "pixel-7.jpg", "Google Pixel 7", 799.99m, 14 },
-                    { 7, "Logitech", 3, "Premium wireless mouse for productivity.", "mx-master-3.jpg", "Logitech MX Master 3", 99.99m, 25 },
-                    { 8, "Keychron", 3, "Compact mechanical keyboard with RGB lighting.", "keychron-k6.jpg", "Keychron K6 Mechanical Keyboard", 79.99m, 30 },
-                    { 9, "Anker", 3, "Portable charger with 10000mAh capacity.", "anker-powercore.jpg", "Anker PowerCore 10000", 39.99m, 50 },
-                    { 10, "Sony", 4, "Top-rated noise-cancelling headphones.", "sony-wh-1000xm5.jpg", "Sony WH-1000XM5", 349.99m, 20 },
-                    { 11, "Apple", 4, "In-ear noise-cancelling earbuds from Apple.", "airpods-pro-2.jpg", "Apple AirPods Pro 2", 249.99m, 30 },
-                    { 12, "JBL", 4, "Portable waterproof Bluetooth speaker.", "jbl-flip-6.jpg", "JBL Flip 6 Bluetooth Speaker", 129.99m, 40 }
+                    { 1, "Dell", 1, "13-inch ultrabook with Intel i7 processor.", "dell-xps-13.webp", "Dell XPS 13", 999.99m, 15 },
+                    { 2, "Apple", 1, "Apple's lightest laptop with M2 chip.", "macbook-air-m2.webp", "MacBook Air M2", 1199.99m, 10 },
+                    { 3, "HP", 1, "Convertible laptop with touch screen.", "hp-spectre.webp", "HP Spectre x360", 1099.99m, 12 },
+                    { 4, "Apple", 2, "Flagship Apple smartphone with A16 Bionic chip.", "iphone-14-pro.webp", "iPhone 14 Pro", 999.99m, 20 },
+                    { 5, "Samsung", 2, "High-end Android smartphone from Samsung.", "galaxy-s23.webp", "Samsung Galaxy S23", 899.99m, 18 },
+                    { 6, "Google", 2, "Clean Android experience with excellent camera.", "pixel-7.webp", "Google Pixel 7", 799.99m, 14 },
+                    { 7, "Logitech", 3, "Premium wireless mouse for productivity.", "mx-master-3.webp", "Logitech MX Master 3", 99.99m, 25 },
+                    { 8, "Keychron", 3, "Compact mechanical keyboard with RGB lighting.", "keychron-k6.webp", "Keychron K6 Mechanical Keyboard", 79.99m, 30 },
+                    { 9, "Anker", 3, "Portable charger with 10000mAh capacity.", "anker-powercore.webp", "Anker PowerCore 10000", 39.99m, 50 },
+                    { 10, "Sony", 4, "Top-rated noise-cancelling headphones.", "sony-wh-1000xm5.webp", "Sony WH-1000XM5", 349.99m, 20 },
+                    { 11, "Apple", 4, "In-ear noise-cancelling earbuds from Apple.", "airpods-pro-2.webp", "Apple AirPods Pro 2", 249.99m, 30 },
+                    { 12, "JBL", 4, "Portable waterproof Bluetooth speaker.", "jbl-flip-6.webp", "JBL Flip 6 Bluetooth Speaker", 129.99m, 40 }
                 });
 
             migrationBuilder.CreateIndex(
