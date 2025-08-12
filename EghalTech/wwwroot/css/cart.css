@@ -332,9 +332,8 @@
 }
 
     .empty-cart-content i {
-        font-size: 4rem;
+        font-size: 20px;
         color: #d1d5db;
-        margin-bottom: 1rem;
     }
 
     .empty-cart-content h2 {
